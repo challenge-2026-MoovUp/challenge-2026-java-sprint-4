@@ -22,7 +22,7 @@ public class Postagem {
     private List<Comentario> comentarios;
     private Date dataPostagem;
 
-    public Postagem(int id, String titulo, String autor, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, List<String> comentarios, Date dataPostagem){
+    public Postagem(int id, String titulo, String autor, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, Date dataPostagem){
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
