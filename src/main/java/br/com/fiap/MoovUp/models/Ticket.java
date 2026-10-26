@@ -2,10 +2,14 @@ package br.com.fiap.MoovUp.models;
 
 import br.com.fiap.MoovUp.enums.StatusTicket;
 import br.com.fiap.MoovUp.interfaces.Resgatavel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Getter
+@Setter
 public abstract class Ticket implements Resgatavel {
     protected String id;
     protected double tarifaReais;
@@ -61,47 +65,6 @@ public abstract class Ticket implements Resgatavel {
     }
 
     public abstract int calcularCustoEmPontos();
-
-    //Métodos getter e setter
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public double getTarifaReais() {
-        return tarifaReais;
-    }
-
-    public void setTarifaReais(double tarifaReais) {
-        this.tarifaReais = tarifaReais;
-    }
-
-    public int getCustoEmPontos() {
-        return custoEmPontos;
-    }
-
-    public void setCustoEmPontos(int custoEmPontos) {
-        this.custoEmPontos = custoEmPontos;
-    }
-
-    public StatusTicket getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusTicket status) {
-        this.status = status;
-    }
-
-    public LocalDate getDataExpiracao() {
-        return dataExpiracao;
-    }
-
-    public void setDataExpiracao(LocalDate dataExpiracao) {
-        this.dataExpiracao = dataExpiracao;
-    }
 
 
 }

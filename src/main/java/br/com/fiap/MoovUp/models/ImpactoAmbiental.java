@@ -1,9 +1,13 @@
 package br.com.fiap.MoovUp.models;
 
 import br.com.fiap.MoovUp.enums.Modalidade;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
+@Getter
+@Setter
 public class ImpactoAmbiental {
     private String id;
     private String idUsuario;
@@ -111,72 +115,6 @@ public class ImpactoAmbiental {
                 co2Evitado,
                 modalidade != null ? modalidade.name() : "N/A"
         );
-    }
-
-    //Métodos getter e setter
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getIdTicket() {
-        return idTicket;
-    }
-
-    public void setIdTicket(String idTicket) {
-        this.idTicket = idTicket;
-    }
-
-    public Modalidade getModalidade() {
-        return modalidade;
-    }
-
-    public void setModalidade(Modalidade modalidade) {
-        this.modalidade = modalidade;
-    }
-
-    public double getCo2Evitado() {
-        return co2Evitado;
-    }
-
-    public void setCo2Evitado(double co2Evitado) {
-        this.co2Evitado = co2Evitado;
-    }
-
-    public int getViagensRealizadas() {
-        return viagensRealizadas;
-    }
-
-    public void setViagensRealizadas(int viagensRealizadas) {
-        this.viagensRealizadas = viagensRealizadas;
-    }
-
-    public double getKmPercorridos() {
-        return kmPercorridos;
-    }
-
-    public void setKmPercorridos(double kmPercorridos) {
-        this.kmPercorridos = kmPercorridos;
-    }
-
-    public java.util.Date getDataCalculo() {
-        return dataCalculo;
-    }
-
-    public void setDataCalculo(java.util.Date dataCalculo) {
-        this.dataCalculo = dataCalculo;
     }
 
 

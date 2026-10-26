@@ -2,9 +2,13 @@ package br.com.fiap.MoovUp.models;
 
 import br.com.fiap.MoovUp.enums.Modalidade;
 import br.com.fiap.MoovUp.enums.StatusTicket;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
 public class TicketDigital extends Ticket {
     private String qrCodeHash;
     private Modalidade modalidade;
@@ -71,23 +75,6 @@ public class TicketDigital extends Ticket {
 
     public void invalidarAposUso(){
         this.status = StatusTicket.UTILIZADO;
-    }
-
-    //Métodos Getter e Setter
-    public String getQrCodeHash() {
-        return qrCodeHash;
-    }
-
-    public void setQrCodeHash(String qrCodeHash) {
-        this.qrCodeHash = qrCodeHash;
-    }
-
-    public Modalidade getModalidade() {
-        return modalidade;
-    }
-
-    public void setModalidade(Modalidade modalidade) {
-        this.modalidade = modalidade;
     }
 
 

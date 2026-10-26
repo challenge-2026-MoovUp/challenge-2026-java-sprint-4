@@ -1,12 +1,16 @@
 package br.com.fiap.MoovUp.models;
 
 import br.com.fiap.MoovUp.enums.StatusUsuario;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 public class Usuario {
     private String id;
     private String nome;
@@ -42,72 +46,6 @@ public class Usuario {
 
     public List<Ticket> consultarHistorico(){
         return this.historicoResgates;
-    }
-
-
-    //Métodos getter e setter
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getSaldoPontos() {
-        return saldoPontos;
-    }
-
-    public void setSaldoPontos(int saldoPontos) {
-        this.saldoPontos = saldoPontos;
-    }
-
-    public List<Ticket> getHistoricoResgates() {
-        return historicoResgates;
-    }
-
-    public void setHistoricoResgates(List<Ticket> historicoResgates) {
-        this.historicoResgates = historicoResgates;
-    }
-
-    public ImpactoAmbiental getImpactoAmbiental() {
-        return this.impactoAmbiental;
-    }
-
-    public void setImpactoAmbiental(ImpactoAmbiental impactoAmbiental) {
-        this.impactoAmbiental = impactoAmbiental;
-    }
-
-    public StatusUsuario getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusUsuario status) {
-        this.status = status;
-    }
-
-    public Date getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(Date dataCadastro) {
-        this.dataCadastro = dataCadastro;
     }
 
 

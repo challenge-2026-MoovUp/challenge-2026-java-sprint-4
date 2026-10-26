@@ -2,10 +2,14 @@ package br.com.fiap.MoovUp.models;
 
 import br.com.fiap.MoovUp.enums.Modalidade;
 import br.com.fiap.MoovUp.enums.StatusTicket;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.ArrayList;
 
+@Getter
+@Setter
 public class EstoqueTickets {
     private List<Ticket> tickets;
     private int capacidadeMaxima;
@@ -96,25 +100,5 @@ public class EstoqueTickets {
                 "Expirados         : " + expirados;
 
         return relatorio;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
-
-    public int getCapacidadeMaxima() {
-        return capacidadeMaxima;
-    }
-
-    public int getQtdDisponivel() {
-        return qtdDisponivel;
-    }
-
-    public void setQtdDisponivel(int qtdDisponivel) {
-        this.qtdDisponivel = qtdDisponivel;
     }
 }
