@@ -27,7 +27,7 @@ public class ImpactoAmbientalDAO {
             ps.setDouble(5, impacto.getCo2Evitado());
             ps.setDouble(6, impacto.getKmPercorridos());
             ps.setInt(7, impacto.getViagensRealizadas());
-            ps.setDate(8, new java.sql.Date(impacto.getDataCalculo().getTime()));
+            ps.setObject(8, impacto.getDataCalculo());
 
             ps.executeUpdate();
         } catch (SQLException e) {

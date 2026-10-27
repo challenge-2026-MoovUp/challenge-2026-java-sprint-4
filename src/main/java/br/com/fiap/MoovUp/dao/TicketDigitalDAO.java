@@ -27,7 +27,7 @@ public class TicketDigitalDAO {
             ps.setString(3, ticket.getStatus().name());
             ps.setDouble(4, ticket.getTarifaReais());
             ps.setInt(5, ticket.getCustoEmPontos());
-            ps.setDate(6, java.sql.Date.valueOf(ticket.getDataExpiracao()));
+            ps.setObject(6, ticket.getDataExpiracao());
             ps.setString(7, ticket.getQrCodeHash());
 
             ps.executeUpdate();

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ public class Usuario {
     private List<Ticket> historicoResgates;
     private StatusUsuario status;
     private ImpactoAmbiental impactoAmbiental;
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
 
     public Usuario(String id, String nome, String email, int saldoPontos) {
         this.id = id;
@@ -29,7 +30,7 @@ public class Usuario {
         this.historicoResgates = new ArrayList<>();
         this.impactoAmbiental = new ImpactoAmbiental();
         this.status = StatusUsuario.A;
-        this.dataCadastro = new Date();
+        this.dataCadastro = LocalDate.now();
     }
 
     public void adicionarPontos(int qtd){

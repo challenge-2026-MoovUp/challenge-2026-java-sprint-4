@@ -26,7 +26,8 @@ public class PostagemDAO {
             comandoSql.setString(6, postagem.getVideo());
             comandoSql.setString(7, postagem.getTipoPostagem().name());
             comandoSql.setInt(8, postagem.getCurtidas());
-            comandoSql.setDate(9, postagem.setDataPostagem()MEXER AQUI);
+            comandoSql.setObject(9, postagem.getDataPostagem());
+
 
             comandoSql.executeUpdate();
             System.out.println("Usuário cadastrado com sucesso!");

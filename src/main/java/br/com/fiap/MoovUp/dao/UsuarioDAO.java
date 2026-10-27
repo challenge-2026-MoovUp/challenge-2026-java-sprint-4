@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class UsuarioDAO {
             comandoSql.setString(3, usuario.getEmail());
             comandoSql.setInt(4, usuario.getSaldoPontos());
             comandoSql.setString(5, usuario.getStatus().name());
-            comandoSql.setDate(6, new java.sql.Date(usuario.getDataCadastro().getTime()));
+            comandoSql.setObject(6, usuario.getDataCadastro());
 
             comandoSql.executeUpdate();
             System.out.println("Usuário cadastrado com sucesso!");
@@ -71,7 +72,7 @@ public class UsuarioDAO {
                     );
 
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getDate("DATA_CADASTRO"));
+                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
                 }
             }
 
@@ -105,7 +106,7 @@ public class UsuarioDAO {
                     );
 
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getDate("DATA_CADASTRO"));
+                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
                 }
             }
 
@@ -132,7 +133,7 @@ public class UsuarioDAO {
                         rs.getInt("SALDO_PONTOS")
                 );
                 usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                usuario.setDataCadastro(rs.getDate("DATA_CADASTRO"));
+                usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
                 usuarios.add(usuario);
             }
 
@@ -165,7 +166,7 @@ public class UsuarioDAO {
                             rs.getInt("SALDO_PONTOS")
                     );
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getDate("DATA_CADASTRO"));
+                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
                     usuarios.add(usuario);
                 }
             }
@@ -225,7 +226,7 @@ public class UsuarioDAO {
                             rs.getInt("SALDO_PONTOS")
                     );
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getDate("DATA_CADASTRO"));
+                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
                 }
             }
 
