@@ -58,16 +58,16 @@ public class TicketDigital extends Ticket {
             return false;
         }
 
-        if (usuario.consultarSaldo() < custo) {
-            System.out.println("Necessário: " + custo + "pts // Disponível na sua conta: " + usuario.consultarSaldo() + " pts");
+        if (usuario.getSaldoPontos() < custo) {
+            System.out.println("Necessário: " + custo + "pts // Disponível na sua conta: " + usuario.getSaldoPontos() + " pts");
             return false;
         }
 
         usuario.adicionarPontos(-custo);
         this.status = StatusTicket.RESERVADO;
         this.qrCodeHash = gerarQRCode();
-        if (!usuario.consultarHistorico().contains(this)) {
-            usuario.consultarHistorico().add(this);
+        if (!usuario.getHistoricoResgates().contains(this)) {
+            usuario.getHistoricoResgates().add(this);
         }
         usuario.getImpactoAmbiental().calcularValoresPorModalidade(this.modalidade);
         return true;

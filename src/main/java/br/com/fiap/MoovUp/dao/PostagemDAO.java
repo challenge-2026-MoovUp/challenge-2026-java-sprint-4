@@ -1,7 +1,6 @@
 package br.com.fiap.MoovUp.dao;
 
 import br.com.fiap.MoovUp.models.Postagem;
-import br.com.fiap.MoovUp.models.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,11 +27,9 @@ public class PostagemDAO {
             comandoSql.setInt(8, postagem.getCurtidas());
             comandoSql.setObject(9, postagem.getDataPostagem());
 
-
             comandoSql.executeUpdate();
-            System.out.println("Usuário cadastrado com sucesso!");
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir usuário no banco: " + e.getMessage(), e);
+            throw new RuntimeException("Erro ao inserir postagem no banco: " + e.getMessage(), e);
         } finally {
             try {
                 if (comandoSql != null) {

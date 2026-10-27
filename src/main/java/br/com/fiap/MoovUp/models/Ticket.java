@@ -46,11 +46,11 @@ public abstract class Ticket implements Resgatavel {
             return false;
         }
 
-        if (this.status == StatusTicket.RESERVADO && !usuario.consultarHistorico().contains(this)) {
-            usuario.consultarHistorico().add(this);
+        if (this.status == StatusTicket.RESERVADO && !usuario.getHistoricoResgates().contains(this)) {
+            usuario.getHistoricoResgates().add(this);
         }
 
-        if (!usuario.consultarHistorico().contains(this) && this.status != StatusTicket.RESERVADO) {
+        if (!usuario.getHistoricoResgates().contains(this) && this.status != StatusTicket.RESERVADO) {
             System.out.println("O usuário não possui este ticket em seu histórico/reserva.");
             return false;
         }

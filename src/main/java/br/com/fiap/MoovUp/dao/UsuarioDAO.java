@@ -32,7 +32,6 @@ public class UsuarioDAO {
             comandoSql.setObject(6, usuario.getDataCadastro());
 
             comandoSql.executeUpdate();
-            System.out.println("Usuário cadastrado com sucesso!");
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir usuário no banco: " + e.getMessage(), e);
         } finally {
@@ -47,40 +46,6 @@ public class UsuarioDAO {
                 throw new RuntimeException("Erro ao fechar conexão: " + e.getMessage(), e);
             }
         }
-    }
-
-    public Usuario buscarPorNome(String nome) {
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome informado é inválido.");
-        }
-
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE UPPER(NOME_USUARIO) = UPPER(?)";
-        Usuario usuario = null;
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
-
-            stmt.setString(1, nome.trim());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    usuario = new Usuario(
-                            rs.getString("ID_USUARIO"),
-                            rs.getString("NOME_USUARIO"),
-                            rs.getString("EMAIL"),
-                            rs.getInt("SALDO_PONTOS")
-                    );
-
-                    usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar usuário por nome: " + e.getMessage(), e);
-        }
-
-        return usuario;
     }
 
     public Usuario buscarPorEmail(String email) {
@@ -258,7 +223,6 @@ public class UsuarioDAO {
                 throw new RuntimeException("Nenhum usuário encontrado com o ID informado.");
             }
 
-            System.out.println("Usuário alterado com sucesso!");
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao alterar usuário no banco: " + e.getMessage(), e);
         } finally {
@@ -293,7 +257,6 @@ public class UsuarioDAO {
                 throw new RuntimeException("Nenhum usuário encontrado com o ID informado.");
             }
 
-            System.out.println("Usuário excluído com sucesso!");
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao excluir usuário no banco: " + e.getMessage(), e);
         } finally {

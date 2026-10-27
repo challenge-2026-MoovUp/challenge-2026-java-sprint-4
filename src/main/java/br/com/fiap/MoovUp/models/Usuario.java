@@ -4,10 +4,8 @@ import br.com.fiap.MoovUp.enums.StatusUsuario;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -35,28 +33,5 @@ public class Usuario {
 
     public void adicionarPontos(int qtd){
         this.saldoPontos += qtd;
-    }
-
-    public boolean resgatarTicket(Ticket t){
-        return t.resgatar(this);
-    }
-
-    public int consultarSaldo(){
-        return  this.saldoPontos;
-    }
-
-    public List<Ticket> consultarHistorico(){
-        return this.historicoResgates;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "ID: " + id + "\n" +
-                "Nome: " + nome + "\n" +
-                "Email: " + email + "\n" +
-                "Saldo: " + saldoPontos + "\n" +
-                "Status: " + status;
     }
 }
