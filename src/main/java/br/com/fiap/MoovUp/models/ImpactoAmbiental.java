@@ -4,7 +4,7 @@ import br.com.fiap.MoovUp.enums.Modalidade;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,13 +16,13 @@ public class ImpactoAmbiental {
     private double co2Evitado;
     private int viagensRealizadas;
     private double kmPercorridos;
-    private Date dataCalculo;
+    private LocalDateTime dataCalculo;
 
     public ImpactoAmbiental() {
         this.co2Evitado = 0;
         this.viagensRealizadas = 0;
         this.kmPercorridos = 0;
-        this.dataCalculo = new Date();
+        this.dataCalculo = LocalDateTime.now().withNano(0);
     }
 
 
@@ -32,7 +32,7 @@ public class ImpactoAmbiental {
         impacto.setIdTicket(idTicket);
         impacto.setModalidade(modalidade);
         impacto.calcularValoresPorModalidade(modalidade);
-        impacto.setDataCalculo(new Date());
+        impacto.setDataCalculo(LocalDateTime.now().withNano(0));
         return impacto;
     }
 

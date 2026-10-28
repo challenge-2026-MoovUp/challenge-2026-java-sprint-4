@@ -21,15 +21,16 @@ public class UsuarioDAO {
         PreparedStatement comandoSql = null;
 
         try {
-            String sql = "INSERT INTO USUARIO_MOOVUP (ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO USUARIO_MOOVUP (ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             comandoSql = conexao.prepareStatement(sql);
             comandoSql.setString(1, usuario.getId());
             comandoSql.setString(2, usuario.getNome());
             comandoSql.setString(3, usuario.getEmail());
-            comandoSql.setInt(4, usuario.getSaldoPontos());
-            comandoSql.setString(5, usuario.getStatus().name());
-            comandoSql.setObject(6, usuario.getDataCadastro());
+            comandoSql.setString(4, usuario.getSenha());
+            comandoSql.setInt(5, usuario.getSaldoPontos());
+            comandoSql.setString(6, usuario.getStatus().name());
+            comandoSql.setObject(7, usuario.getDataCadastro());
 
             comandoSql.executeUpdate();
         } catch (SQLException e) {
@@ -53,7 +54,7 @@ public class UsuarioDAO {
             throw new IllegalArgumentException("O email informado é inválido.");
         }
 
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE UPPER(EMAIL) = UPPER(?)";
+        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE UPPER(EMAIL) = UPPER(?)";
         Usuario usuario = null;
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -67,6 +68,7 @@ public class UsuarioDAO {
                             rs.getString("ID_USUARIO"),
                             rs.getString("NOME_USUARIO"),
                             rs.getString("EMAIL"),
+                            rs.getString("SENHA"),
                             rs.getInt("SALDO_PONTOS")
                     );
 
@@ -83,7 +85,7 @@ public class UsuarioDAO {
     }
 
     public List<Usuario> listarTodos() {
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP ORDER BY NOME_USUARIO";
+        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP ORDER BY NOME_USUARIO";
         List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -95,6 +97,7 @@ public class UsuarioDAO {
                         rs.getString("ID_USUARIO"),
                         rs.getString("NOME_USUARIO"),
                         rs.getString("EMAIL"),
+                        rs.getString("SENHA"),
                         rs.getInt("SALDO_PONTOS")
                 );
                 usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
@@ -114,7 +117,7 @@ public class UsuarioDAO {
             throw new IllegalArgumentException("O status informado é inválido.");
         }
 
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE STATUS = ?";
+        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE STATUS = ?";
         List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -128,6 +131,7 @@ public class UsuarioDAO {
                             rs.getString("ID_USUARIO"),
                             rs.getString("NOME_USUARIO"),
                             rs.getString("EMAIL"),
+                            rs.getString("SENHA"),
                             rs.getInt("SALDO_PONTOS")
                     );
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
@@ -174,7 +178,7 @@ public class UsuarioDAO {
             throw new IllegalArgumentException("O ID informado é inválido.");
         }
 
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
+        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
         Usuario usuario = null;
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -188,6 +192,7 @@ public class UsuarioDAO {
                             rs.getString("ID_USUARIO"),
                             rs.getString("NOME_USUARIO"),
                             rs.getString("EMAIL"),
+                            rs.getString("SENHA"),
                             rs.getInt("SALDO_PONTOS")
                     );
                     usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));

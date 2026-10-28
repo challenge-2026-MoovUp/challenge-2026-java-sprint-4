@@ -115,7 +115,7 @@ public class TicketDigitalDAO {
             ps.setString(2, ticket.getStatus().name());
             ps.setDouble(3, ticket.getTarifaReais());
             ps.setInt(4, ticket.getCustoEmPontos());
-            ps.setDate(5, java.sql.Date.valueOf(ticket.getDataExpiracao()));
+            ps.setObject(5, ticket.getDataExpiracao());
             ps.setString(6, ticket.getQrCodeHash());
             ps.setString(7, ticket.getId());
 
@@ -230,10 +230,7 @@ public class TicketDigitalDAO {
         ticket.setTarifaReais(rs.getDouble("TARIFA_REAIS"));
         ticket.setCustoEmPontos(rs.getInt("CUSTO_EM_PONTOS"));
 
-        java.sql.Date dataExpiracao = rs.getDate("DATA_EXPIRACAO");
-        if (dataExpiracao != null) {
-            ticket.setDataExpiracao(dataExpiracao.toLocalDate());
-        }
+        ticket.setDataExpiracao(rs.getObject("DATA_EXPIRACAO", LocalDate.class));
 
         ticket.setQrCodeHash(rs.getString("QR_CODE_HASH"));
         return ticket;

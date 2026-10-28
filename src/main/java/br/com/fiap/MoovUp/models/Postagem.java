@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 public class Postagem {
-    private int id;
+    private String id;
     private String titulo;
     private String autor;
     private String conteudo;
@@ -20,9 +20,9 @@ public class Postagem {
     private TipoPostagem tipoPostagem;
     private int curtidas;
     private List<Comentario> comentarios;
-    private Date dataPostagem;
+    private LocalDateTime dataPostagem;
 
-    public Postagem(int id, String titulo, String autor, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, Date dataPostagem){
+    public Postagem(String id, String titulo, String autor, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,6 @@ public class ImpactoAmbientalDAO {
         }
 
         ImpactoAmbiental impacto = ImpactoAmbiental.criarParaTicket(idUsuario, idTicket, modalidade);
-        impacto.setId("IMP" + System.currentTimeMillis());
         cadastrarImpactoAmbiental(impacto);
     }
 
@@ -163,7 +163,7 @@ public class ImpactoAmbientalDAO {
             ps.setDouble(4, impacto.getCo2Evitado());
             ps.setDouble(5, impacto.getKmPercorridos());
             ps.setInt(6, impacto.getViagensRealizadas());
-            ps.setDate(7, new java.sql.Date(impacto.getDataCalculo().getTime()));
+            ps.setObject(7, impacto.getDataCalculo());
             ps.setString(8, impacto.getId());
 
             int linhasAfetadas = ps.executeUpdate();
@@ -244,7 +244,7 @@ public class ImpactoAmbientalDAO {
         impacto.setCo2Evitado(rs.getDouble("CO2_EVITADO"));
         impacto.setKmPercorridos(rs.getDouble("KM_PERCORRIDOS"));
         impacto.setViagensRealizadas(rs.getInt("VIAGENS_REALIZADAS"));
-        impacto.setDataCalculo(rs.getDate("DATA_CALCULO"));
+        impacto.setDataCalculo(rs.getObject("DATA_CALCULO", LocalDateTime.class));
         return impacto;
     }
 }

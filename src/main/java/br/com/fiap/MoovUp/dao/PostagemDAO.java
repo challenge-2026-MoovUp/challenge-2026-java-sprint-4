@@ -17,7 +17,7 @@ public class PostagemDAO {
             String sql = "INSERT INTO POSTAGEM (POSTAGEM_ID, TITULO, AUTOR, CONTEUDO, IMAGEM, VIDEO, TIPO_POSTAGEM, CURTIDAS, DATA_POSTAGEM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             comandoSql = conexao.prepareStatement(sql);
-            comandoSql.setInt(1, postagem.getId());
+            comandoSql.setString(1, postagem.getId());
             comandoSql.setString(2, postagem.getTitulo());
             comandoSql.setString(3, postagem.getAutor());
             comandoSql.setString(4, postagem.getConteudo());
