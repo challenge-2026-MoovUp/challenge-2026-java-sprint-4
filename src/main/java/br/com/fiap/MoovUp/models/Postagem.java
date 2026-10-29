@@ -4,9 +4,7 @@ import br.com.fiap.MoovUp.enums.TipoPostagem;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +18,6 @@ public class Postagem {
     private String video;
     private TipoPostagem tipoPostagem;
     private int curtidas;
-    private List<Comentario> comentarios;
     private LocalDateTime dataPostagem;
 
     public Postagem(String id, String titulo, String idUsuario, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
@@ -32,7 +29,6 @@ public class Postagem {
         this.video = video;
         this.tipoPostagem = tipoPostagem;
         this.curtidas = curtidas;
-        this.comentarios = new ArrayList<>();
         this.dataPostagem = dataPostagem;
     }
 }

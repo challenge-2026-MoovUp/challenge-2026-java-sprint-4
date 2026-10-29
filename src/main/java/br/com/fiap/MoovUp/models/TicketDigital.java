@@ -23,59 +23,16 @@ public class TicketDigital extends Ticket {
     }
 
     @Override
-    public boolean validar() {
-        return (this.status == StatusTicket.DISPONIVEL || this.status == StatusTicket.RESERVADO)
-                && this.dataExpiracao != null
-                && LocalDate.now().isBefore(this.dataExpiracao);
-    }
-
-    @Override
-    public boolean confirmarUsoTicket(String idTicket, Usuario usuario) {
-        if (!super.confirmarUsoTicket(idTicket, usuario)) {
-            return false;
-        }
-
-        this.invalidarAposUso();
-        return true;
-    }
-
-    @Override
     public int calcularCustoEmPontos() {
         return (int) Math.floor(this.tarifaReais / 0.009);
     }
 
+    // Chamado pelo service depois de validar o ticket e o saldo do usuário.
     @Override
-    public boolean resgatar(Usuario usuario) {
-        int custo = calcularCustoEmPontos();
-
-        if (usuario == null) {
-            System.out.println("Usuário não informado.");
-            return false;
-        }
-
-        if (!validar()) {
-            System.out.println("Ticket inválido ou expirado.");
-            return false;
-        }
-
-        if (usuario.getSaldoPontos() < custo) {
-            System.out.println("Necessário: " + custo + "pts // Disponível na sua conta: " + usuario.getSaldoPontos() + " pts");
-            return false;
-        }
-
-        usuario.adicionarPontos(-custo);
+    public void resgatar(Usuario usuario) {
+        usuario.adicionarPontos(-calcularCustoEmPontos());
+        this.idUsuario = usuario.getId();
         this.status = StatusTicket.RESERVADO;
         this.qrCodeHash = gerarQRCode();
-        if (!usuario.getHistoricoResgates().contains(this)) {
-            usuario.getHistoricoResgates().add(this);
-        }
-        usuario.getImpactoAmbiental().calcularValoresPorModalidade(this.modalidade);
-        return true;
     }
-
-    public void invalidarAposUso(){
-        this.status = StatusTicket.UTILIZADO;
-    }
-
-
 }

@@ -31,36 +31,9 @@ public class ImpactoAmbiental {
         impacto.setIdUsuario(idUsuario);
         impacto.setIdTicket(idTicket);
         impacto.setModalidade(modalidade);
-        impacto.calcularValoresPorModalidade(modalidade);
-        impacto.setDataCalculo(LocalDateTime.now().withNano(0));
+        impacto.setViagensRealizadas(1);
+        impacto.setKmPercorridos(modalidade.getKm());
+        impacto.setCo2Evitado(modalidade.getKm() * modalidade.getCo2PorKm());
         return impacto;
-    }
-
-    public void calcularValoresPorModalidade(Modalidade modalidade) {
-        if (modalidade == null) {
-            return;
-        }
-
-        this.modalidade = modalidade;
-        this.viagensRealizadas = 1;
-
-        switch (modalidade) {
-            case TREM:
-                this.kmPercorridos = 20.0;
-                this.co2Evitado = 200.0 * this.kmPercorridos;
-                break;
-            case METRO:
-                this.kmPercorridos = 10.0;
-                this.co2Evitado = 200.0 * this.kmPercorridos;
-                break;
-            case ONIBUS:
-                this.kmPercorridos = 15.0;
-                this.co2Evitado = 170.0 * this.kmPercorridos;
-                break;
-            default:
-                this.kmPercorridos = 0.0;
-                this.co2Evitado = 0.0;
-                break;
-        }
     }
 }
