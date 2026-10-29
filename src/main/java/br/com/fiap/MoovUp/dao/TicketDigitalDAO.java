@@ -41,7 +41,7 @@ public class TicketDigitalDAO {
             throw new IllegalArgumentException("ID do ticket inválido.");
         }
 
-        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH FROM TICKET_DIGITAL WHERE ID_TICKET = ?";
+        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH, ID_USUARIO FROM TICKET_DIGITAL WHERE ID_TICKET = ?";
 
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
@@ -61,7 +61,7 @@ public class TicketDigitalDAO {
     }
 
     public List<TicketDigital> listarTodos() {
-        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH FROM TICKET_DIGITAL";
+        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH, ID_USUARIO FROM TICKET_DIGITAL";
         List<TicketDigital> tickets = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -83,7 +83,7 @@ public class TicketDigitalDAO {
             throw new IllegalArgumentException("ID do usuário inválido.");
         }
 
-        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH FROM TICKET_DIGITAL WHERE ID_USUARIO = ?";
+        String sql = "SELECT ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO, QR_CODE_HASH, ID_USUARIO FROM TICKET_DIGITAL WHERE ID_USUARIO = ?";
         List<TicketDigital> tickets = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -233,6 +233,7 @@ public class TicketDigitalDAO {
         ticket.setDataExpiracao(rs.getObject("DATA_EXPIRACAO", LocalDate.class));
 
         ticket.setQrCodeHash(rs.getString("QR_CODE_HASH"));
+        ticket.setIdUsuario(rs.getString("ID_USUARIO"));
         return ticket;
     }
 }

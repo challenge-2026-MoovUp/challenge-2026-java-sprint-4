@@ -13,7 +13,8 @@ import java.util.List;
 public class Postagem {
     private String id;
     private String titulo;
-    private String autor;
+    private String idUsuario;
+    private String nomeUsuario; // não é coluna: vem do JOIN com USUARIO_MOOVUP nos SELECTs
     private String conteudo;
     private String imagem;
     private String video;
@@ -22,10 +23,10 @@ public class Postagem {
     private List<Comentario> comentarios;
     private LocalDateTime dataPostagem;
 
-    public Postagem(String id, String titulo, String autor, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
+    public Postagem(String id, String titulo, String idUsuario, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
         this.id = id;
         this.titulo = titulo;
-        this.autor = autor;
+        this.idUsuario = idUsuario;
         this.conteudo = conteudo;
         this.imagem = imagem;
         this.video = video;
