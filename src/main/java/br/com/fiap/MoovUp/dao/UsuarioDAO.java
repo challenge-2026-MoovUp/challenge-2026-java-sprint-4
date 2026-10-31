@@ -12,99 +12,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDAO {
-    private Connection conexao;
+
+    private static final String SELECT_BASE =
+            "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP";
 
     public void cadastrarUsuario(Usuario usuario) {
-        validarUsuario(usuario);
+        String sql = "INSERT INTO USUARIO_MOOVUP (ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        conexao = ConnectionFactory.obterConexao();
-        PreparedStatement comandoSql = null;
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-        try {
-            String sql = "INSERT INTO USUARIO_MOOVUP (ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            ps.setString(1, usuario.getId());
+            ps.setString(2, usuario.getNome());
+            ps.setString(3, usuario.getEmail());
+            ps.setString(4, usuario.getSenha());
+            ps.setInt(5, usuario.getSaldoPontos());
+            ps.setString(6, usuario.getStatus().name());
+            ps.setObject(7, usuario.getDataCadastro());
 
-            comandoSql = conexao.prepareStatement(sql);
-            comandoSql.setString(1, usuario.getId());
-            comandoSql.setString(2, usuario.getNome());
-            comandoSql.setString(3, usuario.getEmail());
-            comandoSql.setString(4, usuario.getSenha());
-            comandoSql.setInt(5, usuario.getSaldoPontos());
-            comandoSql.setString(6, usuario.getStatus().name());
-            comandoSql.setObject(7, usuario.getDataCadastro());
-
-            comandoSql.executeUpdate();
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir usuário no banco: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (comandoSql != null) {
-                    comandoSql.close();
-                }
-                if (conexao != null && !conexao.isClosed()) {
-                    conexao.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("Erro ao fechar conexão: " + e.getMessage(), e);
-            }
         }
+    }
+
+    public Usuario buscarPorId(String id) {
+        return buscarUm(SELECT_BASE + " WHERE ID_USUARIO = ?", id);
     }
 
     public Usuario buscarPorEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("O email informado é inválido.");
-        }
+        return buscarUm(SELECT_BASE + " WHERE UPPER(EMAIL) = UPPER(?)", email);
+    }
 
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE UPPER(EMAIL) = UPPER(?)";
-        Usuario usuario = null;
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
-
-            stmt.setString(1, email.trim());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    usuario = new Usuario(
-                            rs.getString("ID_USUARIO"),
-                            rs.getString("NOME_USUARIO"),
-                            rs.getString("EMAIL"),
-                            rs.getString("SENHA"),
-                            rs.getInt("SALDO_PONTOS")
-                    );
-
-                    usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar usuário por email: " + e.getMessage(), e);
-        }
-
-        return usuario;
+    // Usado para checar se o nome já existe (NOME_USUARIO é UNIQUE no banco)
+    public Usuario buscarPorNome(String nome) {
+        return buscarUm(SELECT_BASE + " WHERE UPPER(NOME_USUARIO) = UPPER(?)", nome);
     }
 
     public List<Usuario> listarTodos() {
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP ORDER BY NOME_USUARIO";
+        String sql = SELECT_BASE + " ORDER BY NOME_USUARIO";
         List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+             PreparedStatement ps = conexao.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Usuario usuario = new Usuario(
-                        rs.getString("ID_USUARIO"),
-                        rs.getString("NOME_USUARIO"),
-                        rs.getString("EMAIL"),
-                        rs.getString("SENHA"),
-                        rs.getInt("SALDO_PONTOS")
-                );
-                usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
-                usuarios.add(usuario);
+                usuarios.add(mapearUsuario(rs));
             }
-
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao listar usuários: " + e.getMessage(), e);
         }
@@ -113,169 +68,96 @@ public class UsuarioDAO {
     }
 
     public List<Usuario> buscarUsuariosPorStatus(StatusUsuario status) {
-        if (status == null) {
-            throw new IllegalArgumentException("O status informado é inválido.");
+        return listarPorStatus(SELECT_BASE + " WHERE STATUS = ? ORDER BY NOME_USUARIO", status);
+    }
+
+    // Ranking: só os ativos, do maior saldo para o menor
+    public List<Usuario> listarRanking() {
+        return listarPorStatus(SELECT_BASE + " WHERE STATUS = ? ORDER BY SALDO_PONTOS DESC, NOME_USUARIO", StatusUsuario.A);
+    }
+
+    // A senha não muda aqui: o PUT do contrato só tem nome e email
+    public void alterarUsuario(Usuario usuario) {
+        String sql = "UPDATE USUARIO_MOOVUP SET NOME_USUARIO = ?, EMAIL = ?, SALDO_PONTOS = ?, STATUS = ? WHERE ID_USUARIO = ?";
+
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, usuario.getNome());
+            ps.setString(2, usuario.getEmail());
+            ps.setInt(3, usuario.getSaldoPontos());
+            ps.setString(4, usuario.getStatus().name());
+            ps.setString(5, usuario.getId());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao alterar usuário no banco: " + e.getMessage(), e);
+        }
+    }
+
+    // DELETE físico. A API não usa: o DELETE /usuarios/{id} faz exclusão lógica (STATUS = 'I')
+    public void excluirUsuario(String id) {
+        String sql = "DELETE FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
+
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao excluir usuário no banco: " + e.getMessage(), e);
+        }
+    }
+
+    // SELECT que devolve no máximo um usuário (por ID, email ou nome)
+    private Usuario buscarUm(String sql, String valor) {
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, valor);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearUsuario(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar usuário: " + e.getMessage(), e);
         }
 
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE STATUS = ?";
+        return null;
+    }
+
+    private List<Usuario> listarPorStatus(String sql, StatusUsuario status) {
         List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement pr = conexao.prepareStatement(sql)) {
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            pr.setString(1, status.name());
+            ps.setString(1, status.name());
 
-            try (ResultSet rs = pr.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Usuario usuario = new Usuario(
-                            rs.getString("ID_USUARIO"),
-                            rs.getString("NOME_USUARIO"),
-                            rs.getString("EMAIL"),
-                            rs.getString("SENHA"),
-                            rs.getInt("SALDO_PONTOS")
-                    );
-                    usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
-                    usuarios.add(usuario);
+                    usuarios.add(mapearUsuario(rs));
                 }
             }
-
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar usuários por status: " + e.getMessage(), e);
+            throw new RuntimeException("Erro ao listar usuários por status: " + e.getMessage(), e);
         }
 
         return usuarios;
     }
 
-    private void validarUsuario(Usuario usuario) {
-        if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não pode ser nulo.");
-        }
-
-        if (usuario.getId() == null || usuario.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID do usuário é obrigatório.");
-        }
-
-        if (usuario.getNome() == null || usuario.getNome().trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome do usuário é obrigatório.");
-        }
-
-        if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("O email do usuário é obrigatório.");
-        }
-
-        if (!usuario.getEmail().contains("@") || !usuario.getEmail().contains(".")) {
-            throw new IllegalArgumentException("Email inválido. Informe um email no formato correto.");
-        }
-
-        if (usuario.getSaldoPontos() < 0) {
-            throw new IllegalArgumentException("O saldo de pontos não pode ser negativo.");
-        }
-    }
-
-    public Usuario buscarPorId(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID informado é inválido.");
-        }
-
-        String sql = "SELECT ID_USUARIO, NOME_USUARIO, EMAIL, SENHA, SALDO_PONTOS, STATUS, DATA_CADASTRO FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
-        Usuario usuario = null;
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement stmt = conexao.prepareStatement(sql)) {
-
-            stmt.setString(1, id.trim());
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    usuario = new Usuario(
-                            rs.getString("ID_USUARIO"),
-                            rs.getString("NOME_USUARIO"),
-                            rs.getString("EMAIL"),
-                            rs.getString("SENHA"),
-                            rs.getInt("SALDO_PONTOS")
-                    );
-                    usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
-                    usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar usuário por ID: " + e.getMessage(), e);
-        }
-
+    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario(
+                rs.getString("ID_USUARIO"),
+                rs.getString("NOME_USUARIO"),
+                rs.getString("EMAIL"),
+                rs.getString("SENHA"),
+                rs.getInt("SALDO_PONTOS")
+        );
+        usuario.setStatus(StatusUsuario.valueOf(rs.getString("STATUS")));
+        usuario.setDataCadastro(rs.getObject("DATA_CADASTRO", LocalDate.class));
         return usuario;
     }
-
-    public void alterarUsuario(Usuario usuario) {
-        validarUsuario(usuario);
-
-        conexao = ConnectionFactory.obterConexao();
-        PreparedStatement comandoSql = null;
-
-        try {
-            String sql = "UPDATE USUARIO_MOOVUP SET NOME_USUARIO = ?, EMAIL = ?, SALDO_PONTOS = ?, STATUS = ? WHERE ID_USUARIO = ?";
-
-            comandoSql = conexao.prepareStatement(sql);
-            comandoSql.setString(1, usuario.getNome());
-            comandoSql.setString(2, usuario.getEmail());
-            comandoSql.setInt(3, usuario.getSaldoPontos());
-            comandoSql.setString(4, usuario.getStatus().name());
-            comandoSql.setString(5, usuario.getId());
-
-            int linhasAfetadas = comandoSql.executeUpdate();
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum usuário encontrado com o ID informado.");
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao alterar usuário no banco: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (comandoSql != null) {
-                    comandoSql.close();
-                }
-                if (conexao != null && !conexao.isClosed()) {
-                    conexao.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("Erro ao fechar conexão: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    public void excluirUsuario(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID informado é inválido.");
-        }
-
-        conexao = ConnectionFactory.obterConexao();
-        PreparedStatement comandoSql = null;
-
-        try {
-            String sql = "DELETE FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
-            comandoSql = conexao.prepareStatement(sql);
-            comandoSql.setString(1, id.trim());
-
-            int linhasAfetadas = comandoSql.executeUpdate();
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum usuário encontrado com o ID informado.");
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao excluir usuário no banco: " + e.getMessage(), e);
-        } finally {
-            try {
-                if (comandoSql != null) {
-                    comandoSql.close();
-                }
-                if (conexao != null && !conexao.isClosed()) {
-                    conexao.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("Erro ao fechar conexão: " + e.getMessage(), e);
-            }
-        }
-    }
-
 }

@@ -1,5 +1,6 @@
 package br.com.fiap.MoovUp.dao;
 
+import br.com.fiap.MoovUp.dto.ImpactoResumoResponse;
 import br.com.fiap.MoovUp.enums.Modalidade;
 import br.com.fiap.MoovUp.models.ImpactoAmbiental;
 
@@ -227,6 +228,30 @@ public class ImpactoAmbientalDAO {
 
         if (impacto.getCo2Evitado() < 0) {
             throw new IllegalArgumentException("O CO₂ evitado não pode ser negativo.");
+        }
+    }
+
+    // Resumo do GET /usuarios/{id}/impacto. NVL troca o null do SUM (usuário sem impactos) por 0
+    public ImpactoResumoResponse resumirPorUsuario(String idUsuario) {
+        String sql = "SELECT NVL(SUM(VIAGENS_REALIZADAS), 0) AS TOTAL_VIAGENS, NVL(SUM(KM_PERCORRIDOS), 0) AS TOTAL_KM, " +
+                "NVL(SUM(CO2_EVITADO), 0) AS TOTAL_CO2 FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_USUARIO = ?";
+
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, idUsuario);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next(); // SUM sempre devolve uma linha
+                return new ImpactoResumoResponse(
+                        idUsuario,
+                        rs.getInt("TOTAL_VIAGENS"),
+                        rs.getDouble("TOTAL_KM"),
+                        rs.getDouble("TOTAL_CO2")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao resumir impactos do usuário: " + e.getMessage(), e);
         }
     }
 
