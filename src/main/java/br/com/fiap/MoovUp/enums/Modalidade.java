@@ -2,6 +2,7 @@ package br.com.fiap.MoovUp.enums;
 
 public enum Modalidade {
     // tarifa (R$), km médio por viagem, CO₂ evitado (g por km)
+    // ONIBUS fica só para ler os dados antigos do banco: o service não aceita mais ônibus (decisão de 01/11)
     ONIBUS(4.40, 15.0, 170.0),
     METRO(5.00, 10.0, 200.0),
     TREM(5.00, 20.0, 200.0);
