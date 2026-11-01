@@ -12,6 +12,7 @@ public class ImpactoAmbiental {
     private String id;
     private String idUsuario;
     private String idTicket;
+    private String idViagem; // a viagem que gerou este impacto (nulo nos impactos antigos)
     private Modalidade modalidade;
     private double co2Evitado;
     private int viagensRealizadas;

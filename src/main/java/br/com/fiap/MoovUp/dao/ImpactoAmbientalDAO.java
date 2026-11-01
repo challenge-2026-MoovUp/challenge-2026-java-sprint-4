@@ -14,10 +14,12 @@ import java.util.List;
 
 public class ImpactoAmbientalDAO {
 
-    public void cadastrarImpactoAmbiental(ImpactoAmbiental impacto) {
-        validarImpactoAmbiental(impacto);
+    private static final String SELECT_BASE =
+            "SELECT ID_IMPACTO, ID_USUARIO, ID_TICKET, ID_VIAGEM, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO " +
+            "FROM IMPACTO_AMBIENTAL_MOOVPASS";
 
-        String sql = "INSERT INTO IMPACTO_AMBIENTAL_MOOVPASS (ID_IMPACTO, ID_USUARIO, ID_TICKET, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public void cadastrarImpactoAmbiental(ImpactoAmbiental impacto) {
+        String sql = "INSERT INTO IMPACTO_AMBIENTAL_MOOVPASS (ID_IMPACTO, ID_USUARIO, ID_TICKET, ID_VIAGEM, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
@@ -25,11 +27,12 @@ public class ImpactoAmbientalDAO {
             ps.setString(1, impacto.getId());
             ps.setString(2, impacto.getIdUsuario());
             ps.setString(3, impacto.getIdTicket());
-            ps.setString(4, impacto.getModalidade() != null ? impacto.getModalidade().name() : null);
-            ps.setDouble(5, impacto.getCo2Evitado());
-            ps.setDouble(6, impacto.getKmPercorridos());
-            ps.setInt(7, impacto.getViagensRealizadas());
-            ps.setObject(8, impacto.getDataCalculo());
+            ps.setString(4, impacto.getIdViagem());
+            ps.setString(5, impacto.getModalidade().name());
+            ps.setDouble(6, impacto.getCo2Evitado());
+            ps.setDouble(7, impacto.getKmPercorridos());
+            ps.setInt(8, impacto.getViagensRealizadas());
+            ps.setObject(9, impacto.getDataCalculo());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -37,34 +40,13 @@ public class ImpactoAmbientalDAO {
         }
     }
 
-    public void registrarImpactoDoTicket(String idUsuario, String idTicket, Modalidade modalidade) {
-        if (idUsuario == null || idUsuario.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do usuário inválido.");
-        }
-
-        if (idTicket == null || idTicket.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do ticket inválido.");
-        }
-
-        if (buscarPorTicketUsuario(idUsuario, idTicket) != null) {
-            return;
-        }
-
-        ImpactoAmbiental impacto = ImpactoAmbiental.criarParaTicket(idUsuario, idTicket, modalidade);
-        cadastrarImpactoAmbiental(impacto);
-    }
-
     public ImpactoAmbiental buscarPorId(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID informado é inválido.");
-        }
-
-        String sql = "SELECT ID_IMPACTO, ID_USUARIO, ID_TICKET, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_IMPACTO = ?";
+        String sql = SELECT_BASE + " WHERE ID_IMPACTO = ?";
 
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            ps.setString(1, id.trim());
+            ps.setString(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -79,17 +61,13 @@ public class ImpactoAmbientalDAO {
     }
 
     public List<ImpactoAmbiental> buscarPorUsuario(String idUsuario) {
-        if (idUsuario == null || idUsuario.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do usuário inválido.");
-        }
-
-        String sql = "SELECT ID_IMPACTO, ID_USUARIO, ID_TICKET, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_USUARIO = ? ORDER BY DATA_CALCULO DESC";
+        String sql = SELECT_BASE + " WHERE ID_USUARIO = ? ORDER BY DATA_CALCULO DESC";
         List<ImpactoAmbiental> impactos = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            ps.setString(1, idUsuario.trim());
+            ps.setString(1, idUsuario);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -103,37 +81,8 @@ public class ImpactoAmbientalDAO {
         return impactos;
     }
 
-    public ImpactoAmbiental buscarPorTicketUsuario(String idUsuario, String idTicket) {
-        if (idUsuario == null || idUsuario.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do usuário inválido.");
-        }
-
-        if (idTicket == null || idTicket.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID do ticket inválido.");
-        }
-
-        String sql = "SELECT ID_IMPACTO, ID_USUARIO, ID_TICKET, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_USUARIO = ? AND ID_TICKET = ?";
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement ps = conexao.prepareStatement(sql)) {
-
-            ps.setString(1, idUsuario.trim());
-            ps.setString(2, idTicket.trim());
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapearImpacto(rs);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar impacto por ticket do usuário: " + e.getMessage(), e);
-        }
-
-        return null;
-    }
-
     public List<ImpactoAmbiental> listarTodos() {
-        String sql = "SELECT ID_IMPACTO, ID_USUARIO, ID_TICKET, MODALIDADE, CO2_EVITADO, KM_PERCORRIDOS, VIAGENS_REALIZADAS, DATA_CALCULO FROM IMPACTO_AMBIENTAL_MOOVPASS";
+        String sql = SELECT_BASE + " ORDER BY DATA_CALCULO DESC";
         List<ImpactoAmbiental> impactos = new ArrayList<>();
 
         try (Connection conexao = ConnectionFactory.obterConexao();
@@ -148,87 +97,6 @@ public class ImpactoAmbientalDAO {
         }
 
         return impactos;
-    }
-
-    public void alterarImpactoAmbiental(ImpactoAmbiental impacto) {
-        validarImpactoAmbiental(impacto);
-
-        String sql = "UPDATE IMPACTO_AMBIENTAL_MOOVPASS SET ID_USUARIO = ?, ID_TICKET = ?, MODALIDADE = ?, CO2_EVITADO = ?, KM_PERCORRIDOS = ?, VIAGENS_REALIZADAS = ?, DATA_CALCULO = ? WHERE ID_IMPACTO = ?";
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement ps = conexao.prepareStatement(sql)) {
-
-            ps.setString(1, impacto.getIdUsuario());
-            ps.setString(2, impacto.getIdTicket());
-            ps.setString(3, impacto.getModalidade() != null ? impacto.getModalidade().name() : null);
-            ps.setDouble(4, impacto.getCo2Evitado());
-            ps.setDouble(5, impacto.getKmPercorridos());
-            ps.setInt(6, impacto.getViagensRealizadas());
-            ps.setObject(7, impacto.getDataCalculo());
-            ps.setString(8, impacto.getId());
-
-            int linhasAfetadas = ps.executeUpdate();
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum impacto ambiental encontrado com o ID informado.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao alterar impacto ambiental no banco: " + e.getMessage(), e);
-        }
-    }
-
-    public void excluirImpactoAmbiental(String id) {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID informado é inválido.");
-        }
-
-        String sql = "DELETE FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_IMPACTO = ?";
-
-        try (Connection conexao = ConnectionFactory.obterConexao();
-             PreparedStatement ps = conexao.prepareStatement(sql)) {
-
-            ps.setString(1, id.trim());
-
-            int linhasAfetadas = ps.executeUpdate();
-            if (linhasAfetadas == 0) {
-                throw new RuntimeException("Nenhum impacto ambiental encontrado com o ID informado.");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Erro ao excluir impacto ambiental: " + e.getMessage(), e);
-        }
-    }
-
-    private void validarImpactoAmbiental(ImpactoAmbiental impacto) {
-        if (impacto == null) {
-            throw new IllegalArgumentException("Impacto ambiental não pode ser nulo.");
-        }
-
-        if (impacto.getId() == null || impacto.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("O ID do impacto ambiental é obrigatório.");
-        }
-
-        if (impacto.getIdUsuario() == null || impacto.getIdUsuario().trim().isEmpty()) {
-            throw new IllegalArgumentException("O usuário do impacto ambiental é obrigatório.");
-        }
-
-        if (impacto.getIdTicket() == null || impacto.getIdTicket().trim().isEmpty()) {
-            throw new IllegalArgumentException("O ticket do impacto ambiental é obrigatório.");
-        }
-
-        if (impacto.getDataCalculo() == null) {
-            throw new IllegalArgumentException("A data de cálculo é obrigatória.");
-        }
-
-        if (impacto.getKmPercorridos() < 0) {
-            throw new IllegalArgumentException("Os quilômetros percorridos não podem ser negativos.");
-        }
-
-        if (impacto.getViagensRealizadas() < 0) {
-            throw new IllegalArgumentException("A quantidade de viagens não pode ser negativa.");
-        }
-
-        if (impacto.getCo2Evitado() < 0) {
-            throw new IllegalArgumentException("O CO₂ evitado não pode ser negativo.");
-        }
     }
 
     // Resumo do GET /usuarios/{id}/impacto. NVL troca o null do SUM (usuário sem impactos) por 0
@@ -255,11 +123,25 @@ public class ImpactoAmbientalDAO {
         }
     }
 
+    public void excluirImpactoAmbiental(String id) {
+        String sql = "DELETE FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_IMPACTO = ?";
+
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao excluir impacto ambiental: " + e.getMessage(), e);
+        }
+    }
+
     private ImpactoAmbiental mapearImpacto(ResultSet rs) throws SQLException {
         ImpactoAmbiental impacto = new ImpactoAmbiental();
         impacto.setId(rs.getString("ID_IMPACTO"));
         impacto.setIdUsuario(rs.getString("ID_USUARIO"));
         impacto.setIdTicket(rs.getString("ID_TICKET"));
+        impacto.setIdViagem(rs.getString("ID_VIAGEM"));
 
         String modalidade = rs.getString("MODALIDADE");
         if (modalidade != null) {

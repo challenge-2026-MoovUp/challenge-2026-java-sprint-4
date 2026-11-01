@@ -100,4 +100,13 @@ public class UsuarioController {
             return TratadorDeErros.tratarErro(e);
         }
     }
+
+    @GetMapping("/{id}/impacto/historico")
+    public ResponseEntity<?> consultarHistoricoImpacto(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(usuarioService.consultarHistoricoImpacto(id));
+        } catch (RuntimeException e) {
+            return TratadorDeErros.tratarErro(e);
+        }
+    }
 }

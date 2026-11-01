@@ -7,7 +7,9 @@ import br.com.fiap.MoovUp.enums.StatusUsuario;
 import br.com.fiap.MoovUp.exception.CredenciaisInvalidasException;
 import br.com.fiap.MoovUp.exception.RecursoNaoEncontradoException;
 import br.com.fiap.MoovUp.exception.RegraNegocioException;
+import br.com.fiap.MoovUp.mapper.ImpactoAmbientalMapper;
 import br.com.fiap.MoovUp.mapper.UsuarioMapper;
+import br.com.fiap.MoovUp.models.ImpactoAmbiental;
 import br.com.fiap.MoovUp.models.Usuario;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +91,16 @@ public class UsuarioService {
     public ImpactoResumoResponse consultarImpacto(String id) {
         buscarAtivo(id);
         return impactoDAO.resumirPorUsuario(id);
+    }
+
+    public List<ImpactoResponse> consultarHistoricoImpacto(String id) {
+        buscarAtivo(id);
+
+        List<ImpactoResponse> resposta = new ArrayList<>();
+        for (ImpactoAmbiental impacto : impactoDAO.buscarPorUsuario(id)) {
+            resposta.add(ImpactoAmbientalMapper.toDTO(impacto));
+        }
+        return resposta;
     }
 
     public List<RankingResponse> ranking() {
