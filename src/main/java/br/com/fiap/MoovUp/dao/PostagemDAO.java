@@ -96,6 +96,20 @@ public class PostagemDAO {
         }
     }
 
+    // NVL: postagens antigas podem ter CURTIDAS nulo
+    public void somarCurtida(String id) {
+        String sql = "UPDATE POSTAGEM SET CURTIDAS = NVL(CURTIDAS, 0) + 1 WHERE POSTAGEM_ID = ?";
+
+        try (Connection conexao = ConnectionFactory.obterConexao();
+             PreparedStatement ps = conexao.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao somar curtida: " + e.getMessage(), e);
+        }
+    }
+
     public void excluirPostagem(String id) {
         String sql = "DELETE FROM POSTAGEM WHERE POSTAGEM_ID = ?";
 

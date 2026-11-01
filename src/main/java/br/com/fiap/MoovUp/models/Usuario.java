@@ -30,4 +30,9 @@ public class Usuario {
     public void adicionarPontos(int qtd){
         this.saldoPontos += qtd;
     }
+
+    // Math.max: se o saldo já foi gasto, para em 0 (o banco não aceita saldo negativo)
+    public void removerPontos(int qtd){
+        this.saldoPontos = Math.max(0, this.saldoPontos - qtd);
+    }
 }
