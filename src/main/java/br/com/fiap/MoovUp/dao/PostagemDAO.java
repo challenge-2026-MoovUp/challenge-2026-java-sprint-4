@@ -13,11 +13,13 @@ import java.util.List;
 
 public class PostagemDAO {
 
-    // JOIN com o usuário para trazer o nomeUsuario (não é coluna da POSTAGEM)
+    // JOIN com o usuário para trazer o nomeUsuario (não é coluna da POSTAGEM).
+    // STATUS = 'A': postagens de usuários excluídos (inativos) não aparecem
     private static final String SELECT_BASE =
             "SELECT P.POSTAGEM_ID, P.TITULO, P.ID_USUARIO, U.NOME_USUARIO, P.CONTEUDO, P.IMAGEM, P.VIDEO, " +
             "P.TIPO_POSTAGEM, P.CURTIDAS, P.DATA_POSTAGEM " +
-            "FROM POSTAGEM P JOIN USUARIO_MOOVUP U ON U.ID_USUARIO = P.ID_USUARIO";
+            "FROM POSTAGEM P JOIN USUARIO_MOOVUP U ON U.ID_USUARIO = P.ID_USUARIO " +
+            "WHERE U.STATUS = 'A'";
 
     public void cadastrarPostagem(Postagem postagem) {
         String sql = "INSERT INTO POSTAGEM (POSTAGEM_ID, TITULO, ID_USUARIO, CONTEUDO, IMAGEM, VIDEO, TIPO_POSTAGEM, CURTIDAS, DATA_POSTAGEM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -42,7 +44,7 @@ public class PostagemDAO {
     }
 
     public Postagem buscarPorId(String id) {
-        String sql = SELECT_BASE + " WHERE P.POSTAGEM_ID = ?";
+        String sql = SELECT_BASE + " AND P.POSTAGEM_ID = ?";
 
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
