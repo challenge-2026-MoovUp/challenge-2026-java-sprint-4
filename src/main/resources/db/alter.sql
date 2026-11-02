@@ -115,11 +115,30 @@ ALTER TABLE IMPACTO_AMBIENTAL_MOOVPASS ADD CONSTRAINT CK_IMPACTO_MODALIDADE
 
 
 -- ---------------------------------------------------------------------
+-- 02/11 - 6) Pedido do front: seguir usuários
+-- PK composta: a mesma pessoa não é seguida duas vezes pelo mesmo usuário.
+-- CHECK: ninguém segue a si mesmo (o service também barra, com 422).
+-- CASCADE como na CURTIDA: é um vínculo social, não um histórico.
+-- ---------------------------------------------------------------------
+CREATE TABLE SEGUIDOR (
+    ID_USUARIO   VARCHAR2(50) NOT NULL,
+    ID_SEGUIDO   VARCHAR2(50) NOT NULL,
+    DATA_SEGUIDO DATE         NOT NULL,
+    CONSTRAINT PK_SEGUIDOR PRIMARY KEY (ID_USUARIO, ID_SEGUIDO),
+    CONSTRAINT FK_SEGUIDOR_USUARIO FOREIGN KEY (ID_USUARIO)
+        REFERENCES USUARIO_MOOVUP (ID_USUARIO) ON DELETE CASCADE,
+    CONSTRAINT FK_SEGUIDOR_SEGUIDO FOREIGN KEY (ID_SEGUIDO)
+        REFERENCES USUARIO_MOOVUP (ID_USUARIO) ON DELETE CASCADE,
+    CONSTRAINT CK_SEGUIDOR_PROPRIO CHECK (ID_USUARIO <> ID_SEGUIDO)
+);
+
+
+-- ---------------------------------------------------------------------
 -- Conferência: deve listar as colunas/constraints novas
 -- ---------------------------------------------------------------------
 -- SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NULLABLE FROM USER_TAB_COLUMNS
 --  WHERE TABLE_NAME IN ('USUARIO_MOOVUP','POSTAGEM','COMENTARIO','TICKET_DIGITAL',
---                       'IMPACTO_AMBIENTAL_MOOVPASS','CURTIDA','VIAGEM')
+--                       'IMPACTO_AMBIENTAL_MOOVPASS','CURTIDA','VIAGEM','SEGUIDOR')
 --  ORDER BY TABLE_NAME, COLUMN_ID;
 -- SELECT TABLE_NAME, CONSTRAINT_NAME, CONSTRAINT_TYPE FROM USER_CONSTRAINTS
 --  WHERE CONSTRAINT_NAME NOT LIKE 'SYS_%' ORDER BY TABLE_NAME;
