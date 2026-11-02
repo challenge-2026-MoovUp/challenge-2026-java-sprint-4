@@ -1,6 +1,8 @@
 package br.com.fiap.MoovUp.dao;
 
 import br.com.fiap.MoovUp.models.Comentario;
+import br.com.fiap.MoovUp.models.Postagem;
+import br.com.fiap.MoovUp.models.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class ComentarioDAO {
 
-    // JOIN com o usuário para trazer o nomeUsuario (não é coluna do COMENTARIO)
+    // JOIN com o usuário para montar o objeto Usuario (id e nome) do autor
     private static final String SELECT_BASE =
             "SELECT C.COMENTARIO_ID, C.POSTAGEM_ID, C.ID_USUARIO, U.NOME_USUARIO, C.CONTEUDO, C.CURTIDAS, C.DATA_COMENTARIO " +
             "FROM COMENTARIO C JOIN USUARIO_MOOVUP U ON U.ID_USUARIO = C.ID_USUARIO";
@@ -24,8 +26,8 @@ public class ComentarioDAO {
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
             ps.setString(1, comentario.getId());
-            ps.setString(2, comentario.getIdPostagem());
-            ps.setString(3, comentario.getIdUsuario());
+            ps.setString(2, comentario.getPostagem().getId());
+            ps.setString(3, comentario.getUsuario().getId());
             ps.setString(4, comentario.getConteudo());
             ps.setInt(5, comentario.getCurtidas());
             ps.setObject(6, comentario.getDataComentario());
@@ -90,16 +92,22 @@ public class ComentarioDAO {
         }
     }
 
+    // Objetos relacionados só com o que a consulta traz: a postagem só com o id
     private Comentario mapearComentario(ResultSet rs) throws SQLException {
-        Comentario comentario = new Comentario(
+        Postagem postagem = new Postagem();
+        postagem.setId(rs.getString("POSTAGEM_ID"));
+
+        Usuario autor = new Usuario();
+        autor.setId(rs.getString("ID_USUARIO"));
+        autor.setNome(rs.getString("NOME_USUARIO"));
+
+        return new Comentario(
                 rs.getString("COMENTARIO_ID"),
-                rs.getString("POSTAGEM_ID"),
-                rs.getString("ID_USUARIO"),
+                postagem,
+                autor,
                 rs.getString("CONTEUDO"),
                 rs.getInt("CURTIDAS"),
                 rs.getObject("DATA_COMENTARIO", LocalDateTime.class)
         );
-        comentario.setNomeUsuario(rs.getString("NOME_USUARIO"));
-        return comentario;
     }
 }

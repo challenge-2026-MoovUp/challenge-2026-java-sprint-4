@@ -15,8 +15,8 @@ public class CurtidaDAO {
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            ps.setString(1, curtida.getIdUsuario());
-            ps.setString(2, curtida.getIdPostagem());
+            ps.setString(1, curtida.getUsuario().getId());
+            ps.setString(2, curtida.getPostagem().getId());
             ps.setObject(3, curtida.getDataCurtida());
 
             ps.executeUpdate();

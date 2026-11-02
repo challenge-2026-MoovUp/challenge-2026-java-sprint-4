@@ -15,6 +15,10 @@ public class TicketDigital extends Ticket {
     private Modalidade modalidade;
     private FormaRecebimento formaRecebimento; // null enquanto está no estoque
 
+    // Vazio: usado pelos DAOs quando o ticket vem de outra tabela (só o id preenchido)
+    public TicketDigital() {
+    }
+
     public TicketDigital(String id, Modalidade modalidade){
         this.id = id;
         this.modalidade = modalidade;
@@ -34,7 +38,7 @@ public class TicketDigital extends Ticket {
     @Override
     public void resgatar(Usuario usuario) {
         usuario.adicionarPontos(-calcularCustoEmPontos());
-        this.idUsuario = usuario.getId();
+        this.usuario = usuario; // o ticket passa a apontar para o dono
         this.status = StatusTicket.RESERVADO;
         this.dataExpiracao = LocalDate.now().plusDays(2);
         this.qrCodeHash = gerarQRCode();

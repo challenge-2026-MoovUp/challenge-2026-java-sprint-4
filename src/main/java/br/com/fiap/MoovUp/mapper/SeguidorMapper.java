@@ -7,6 +7,6 @@ public class SeguidorMapper {
 
     // O front só precisa de quem é seguido: o id e o nome dele
     public static SeguidoResponse toDTO(Seguidor seguidor) {
-        return new SeguidoResponse(seguidor.getIdSeguido(), seguidor.getNomeSeguido());
+        return new SeguidoResponse(seguidor.getSeguido().getId(), seguidor.getSeguido().getNome());
     }
 }

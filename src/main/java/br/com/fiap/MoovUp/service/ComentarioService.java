@@ -6,6 +6,7 @@ import br.com.fiap.MoovUp.dto.ComentarioResponse;
 import br.com.fiap.MoovUp.exception.RecursoNaoEncontradoException;
 import br.com.fiap.MoovUp.mapper.ComentarioMapper;
 import br.com.fiap.MoovUp.models.Comentario;
+import br.com.fiap.MoovUp.models.Postagem;
 import br.com.fiap.MoovUp.models.Usuario;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +28,11 @@ public class ComentarioService {
 
     // Regra: a postagem e o usuário precisam existir
     public ComentarioResponse criar(String idPostagem, ComentarioRequest request) {
-        postagemService.buscarExistente(idPostagem);
+        Postagem postagem = postagemService.buscarExistente(idPostagem);
         validarConteudo(request.conteudo());
         Usuario usuario = usuarioService.buscarAtivo(request.idUsuario());
 
-        Comentario comentario = ComentarioMapper.toEntity(request, UUID.randomUUID().toString(), idPostagem);
-        comentario.setNomeUsuario(usuario.getNome());
+        Comentario comentario = ComentarioMapper.toEntity(request, UUID.randomUUID().toString(), postagem, usuario);
         comentarioDAO.cadastrarComentario(comentario);
         return ComentarioMapper.toDTO(comentario);
     }

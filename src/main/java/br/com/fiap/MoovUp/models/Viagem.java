@@ -7,22 +7,26 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-// Uma viagem feita com um ticket resgatado (máximo de 2 por ticket, regra do ViagemService)
+// Uma viagem feita com um ticket já usado na catraca (1 por ticket, regra do ViagemService)
 @Getter
 @Setter
 public class Viagem {
     private String id;
-    private String idUsuario;
-    private String idTicket;
+    private Usuario usuario;      // no banco: ID_USUARIO
+    private TicketDigital ticket; // no banco: ID_TICKET
     private Linha linha;
     private Estacao estacaoEmbarque;
     private int pontosGerados;
     private LocalDateTime dataViagem;
 
-    public Viagem(String id, String idUsuario, String idTicket, Linha linha, Estacao estacaoEmbarque, int pontosGerados, LocalDateTime dataViagem) {
+    // Vazio: usado pelos DAOs quando a viagem vem de outra tabela (só o id preenchido)
+    public Viagem() {
+    }
+
+    public Viagem(String id, Usuario usuario, TicketDigital ticket, Linha linha, Estacao estacaoEmbarque, int pontosGerados, LocalDateTime dataViagem) {
         this.id = id;
-        this.idUsuario = idUsuario;
-        this.idTicket = idTicket;
+        this.usuario = usuario;
+        this.ticket = ticket;
         this.linha = linha;
         this.estacaoEmbarque = estacaoEmbarque;
         this.pontosGerados = pontosGerados;

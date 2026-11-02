@@ -3,6 +3,9 @@ package br.com.fiap.MoovUp.dao;
 import br.com.fiap.MoovUp.dto.ImpactoResumoResponse;
 import br.com.fiap.MoovUp.enums.Modalidade;
 import br.com.fiap.MoovUp.models.ImpactoAmbiental;
+import br.com.fiap.MoovUp.models.TicketDigital;
+import br.com.fiap.MoovUp.models.Usuario;
+import br.com.fiap.MoovUp.models.Viagem;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,9 +28,9 @@ public class ImpactoAmbientalDAO {
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
             ps.setString(1, impacto.getId());
-            ps.setString(2, impacto.getIdUsuario());
-            ps.setString(3, impacto.getIdTicket());
-            ps.setString(4, impacto.getIdViagem());
+            ps.setString(2, impacto.getUsuario().getId());
+            ps.setString(3, impacto.getTicket().getId());
+            ps.setString(4, impacto.getViagem() == null ? null : impacto.getViagem().getId());
             ps.setString(5, impacto.getModalidade().name());
             ps.setDouble(6, impacto.getCo2Evitado());
             ps.setDouble(7, impacto.getKmPercorridos());
@@ -139,9 +142,23 @@ public class ImpactoAmbientalDAO {
     private ImpactoAmbiental mapearImpacto(ResultSet rs) throws SQLException {
         ImpactoAmbiental impacto = new ImpactoAmbiental();
         impacto.setId(rs.getString("ID_IMPACTO"));
-        impacto.setIdUsuario(rs.getString("ID_USUARIO"));
-        impacto.setIdTicket(rs.getString("ID_TICKET"));
-        impacto.setIdViagem(rs.getString("ID_VIAGEM"));
+
+        // Objetos relacionados só com o id (é o que a tabela guarda)
+        Usuario usuario = new Usuario();
+        usuario.setId(rs.getString("ID_USUARIO"));
+        impacto.setUsuario(usuario);
+
+        TicketDigital ticket = new TicketDigital();
+        ticket.setId(rs.getString("ID_TICKET"));
+        impacto.setTicket(ticket);
+
+        // Impactos antigos (de antes das viagens) não têm viagem
+        String idViagem = rs.getString("ID_VIAGEM");
+        if (idViagem != null) {
+            Viagem viagem = new Viagem();
+            viagem.setId(idViagem);
+            impacto.setViagem(viagem);
+        }
 
         String modalidade = rs.getString("MODALIDADE");
         if (modalidade != null) {

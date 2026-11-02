@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class Curtida {
-    private String idUsuario;
-    private String idPostagem;
+    private Usuario usuario;   // quem curtiu (no banco: ID_USUARIO)
+    private Postagem postagem; // no banco: POSTAGEM_ID
     private LocalDateTime dataCurtida;
 
-    public Curtida(String idUsuario, String idPostagem) {
-        this.idUsuario = idUsuario;
-        this.idPostagem = idPostagem;
+    public Curtida(Usuario usuario, Postagem postagem) {
+        this.usuario = usuario;
+        this.postagem = postagem;
         this.dataCurtida = LocalDateTime.now().withNano(0);
     }
 }

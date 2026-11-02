@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 public abstract class Ticket implements Resgatavel {
     protected String id;
-    protected String idUsuario; // dono do ticket; null enquanto está no estoque (DISPONIVEL)
+    protected Usuario usuario; // dono do ticket (no banco: ID_USUARIO); null enquanto está no estoque
     protected double tarifaReais;
     protected int custoEmPontos;
     protected StatusTicket status;

@@ -57,7 +57,7 @@ public class ViagemService {
         TicketDigital ticket = ticketService.buscarExistente(request.idTicket().trim());
 
         // Regra: o ticket precisa ser do usuário (senão daria para ganhar pontos com o ticket de outra pessoa)
-        if (!usuario.getId().equals(ticket.getIdUsuario())) {
+        if (ticket.getUsuario() == null || !usuario.getId().equals(ticket.getUsuario().getId())) {
             throw new RegraNegocioException("Este ticket não pertence ao usuário");
         }
 
@@ -78,7 +78,7 @@ public class ViagemService {
         }
 
         // 1) grava a viagem
-        Viagem viagem = new Viagem(UUID.randomUUID().toString(), usuario.getId(), ticket.getId(),
+        Viagem viagem = new Viagem(UUID.randomUUID().toString(), usuario, ticket,
                 linha, estacao, PONTOS_POR_VIAGEM, LocalDateTime.now().withNano(0));
         viagemDAO.cadastrarViagem(viagem);
 
@@ -87,9 +87,8 @@ public class ViagemService {
         usuarioDAO.alterarUsuario(usuario);
 
         // 3) impacto ambiental, pela modalidade da linha em que a pessoa viajou
-        ImpactoAmbiental impacto = ImpactoAmbiental.criarParaTicket(usuario.getId(), ticket.getId(), linha.getModalidade());
+        ImpactoAmbiental impacto = ImpactoAmbiental.criarParaViagem(viagem, linha.getModalidade());
         impacto.setId(UUID.randomUUID().toString());
-        impacto.setIdViagem(viagem.getId());
         impactoDAO.cadastrarImpactoAmbiental(impacto);
 
         return ViagemMapper.toDTO(viagem);

@@ -4,6 +4,7 @@ import br.com.fiap.MoovUp.enums.FormaRecebimento;
 import br.com.fiap.MoovUp.enums.Modalidade;
 import br.com.fiap.MoovUp.enums.StatusTicket;
 import br.com.fiap.MoovUp.models.TicketDigital;
+import br.com.fiap.MoovUp.models.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -164,7 +165,7 @@ public class TicketDigitalDAO {
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            ps.setString(1, ticket.getIdUsuario());
+            ps.setString(1, ticket.getUsuario().getId());
             ps.setString(2, ticket.getStatus().name());
             ps.setString(3, ticket.getFormaRecebimento().name());
             ps.setString(4, ticket.getQrCodeHash());
@@ -212,7 +213,14 @@ public class TicketDigitalDAO {
         ticket.setCustoEmPontos(rs.getInt("CUSTO_EM_PONTOS"));
         ticket.setDataExpiracao(rs.getObject("DATA_EXPIRACAO", LocalDate.class));
         ticket.setQrCodeHash(rs.getString("QR_CODE_HASH"));
-        ticket.setIdUsuario(rs.getString("ID_USUARIO"));
+
+        // Ticket no estoque não tem dono: aí o usuario fica null
+        String idUsuario = rs.getString("ID_USUARIO");
+        if (idUsuario != null) {
+            Usuario dono = new Usuario();
+            dono.setId(idUsuario);
+            ticket.setUsuario(dono);
+        }
 
         String forma = rs.getString("FORMA_RECEBIMENTO");
         if (forma != null) {

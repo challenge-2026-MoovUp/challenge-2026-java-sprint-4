@@ -9,17 +9,16 @@ import java.time.LocalDateTime;
 @Setter
 public class Comentario {
     private String id;
-    private String idPostagem;
-    private String idUsuario;
-    private String nomeUsuario; // não é coluna: vem do JOIN com USUARIO_MOOVUP nos SELECTs
+    private Postagem postagem; // no banco: POSTAGEM_ID
+    private Usuario usuario;   // autor do comentário (no banco: ID_USUARIO)
     private String conteudo;
     private int curtidas;
     private LocalDateTime dataComentario;
 
-    public Comentario(String id, String idPostagem, String idUsuario, String conteudo, int curtidas, LocalDateTime dataComentario){
+    public Comentario(String id, Postagem postagem, Usuario usuario, String conteudo, int curtidas, LocalDateTime dataComentario){
         this.id = id;
-        this.idPostagem = idPostagem;
-        this.idUsuario = idUsuario;
+        this.postagem = postagem;
+        this.usuario = usuario;
         this.conteudo = conteudo;
         this.curtidas = curtidas;
         this.dataComentario = dataComentario;

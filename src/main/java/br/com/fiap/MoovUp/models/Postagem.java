@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 public class Postagem {
     private String id;
     private String titulo;
-    private String idUsuario;
-    private String nomeUsuario; // não é coluna: vem do JOIN com USUARIO_MOOVUP nos SELECTs
+    private Usuario usuario; // autor (no banco: ID_USUARIO)
     private String conteudo;
     private String imagem;
     private String video;
@@ -20,10 +19,14 @@ public class Postagem {
     private int curtidas;
     private LocalDateTime dataPostagem;
 
-    public Postagem(String id, String titulo, String idUsuario, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
+    // Vazio: usado pelos DAOs quando a postagem vem de um JOIN (só o id preenchido)
+    public Postagem() {
+    }
+
+    public Postagem(String id, String titulo, Usuario usuario, String conteudo, String imagem, String video, TipoPostagem tipoPostagem, int curtidas, LocalDateTime dataPostagem){
         this.id = id;
         this.titulo = titulo;
-        this.idUsuario = idUsuario;
+        this.usuario = usuario;
         this.conteudo = conteudo;
         this.imagem = imagem;
         this.video = video;

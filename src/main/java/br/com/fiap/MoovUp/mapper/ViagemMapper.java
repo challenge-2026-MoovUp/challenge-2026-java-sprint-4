@@ -11,8 +11,8 @@ public class ViagemMapper {
         Modalidade modalidade = viagem.getLinha().getModalidade();
         return new ViagemResponse(
                 viagem.getId(),
-                viagem.getIdUsuario(),
-                viagem.getIdTicket(),
+                viagem.getUsuario().getId(),
+                viagem.getTicket().getId(),
                 modalidade,
                 viagem.getLinha(),
                 viagem.getEstacaoEmbarque(),

@@ -5,19 +5,18 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-// Tabela SEGUIDOR: ID_USUARIO segue ID_SEGUIDO.
+// Tabela SEGUIDOR: o usuario segue o seguido (as duas pontas são Usuario).
 // A PK (ID_USUARIO, ID_SEGUIDO) impede seguir a mesma pessoa duas vezes.
 @Getter
 @Setter
 public class Seguidor {
-    private String idUsuario;
-    private String idSeguido;
+    private Usuario usuario; // quem segue (no banco: ID_USUARIO)
+    private Usuario seguido; // quem é seguido (no banco: ID_SEGUIDO)
     private LocalDateTime dataSeguido;
-    private String nomeSeguido; // não é coluna: vem do JOIN com USUARIO_MOOVUP
 
-    public Seguidor(String idUsuario, String idSeguido) {
-        this.idUsuario = idUsuario;
-        this.idSeguido = idSeguido;
+    public Seguidor(Usuario usuario, Usuario seguido) {
+        this.usuario = usuario;
+        this.seguido = seguido;
         this.dataSeguido = LocalDateTime.now().withNano(0);
     }
 }

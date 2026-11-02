@@ -1,6 +1,7 @@
 package br.com.fiap.MoovUp.dao;
 
 import br.com.fiap.MoovUp.models.Seguidor;
+import br.com.fiap.MoovUp.models.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,8 +19,8 @@ public class SeguidorDAO {
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
-            ps.setString(1, seguidor.getIdUsuario());
-            ps.setString(2, seguidor.getIdSeguido());
+            ps.setString(1, seguidor.getUsuario().getId());
+            ps.setString(2, seguidor.getSeguido().getId());
             ps.setObject(3, seguidor.getDataSeguido());
 
             ps.executeUpdate();
@@ -85,10 +86,17 @@ public class SeguidorDAO {
         }
     }
 
+    // O seguido vem com id e nome (do JOIN); quem segue, só com o id
     private Seguidor mapearSeguidor(ResultSet rs) throws SQLException {
-        Seguidor seguidor = new Seguidor(rs.getString("ID_USUARIO"), rs.getString("ID_SEGUIDO"));
+        Usuario usuario = new Usuario();
+        usuario.setId(rs.getString("ID_USUARIO"));
+
+        Usuario seguido = new Usuario();
+        seguido.setId(rs.getString("ID_SEGUIDO"));
+        seguido.setNome(rs.getString("NOME_USUARIO"));
+
+        Seguidor seguidor = new Seguidor(usuario, seguido);
         seguidor.setDataSeguido(rs.getObject("DATA_SEGUIDO", LocalDateTime.class));
-        seguidor.setNomeSeguido(rs.getString("NOME_USUARIO"));
         return seguidor;
     }
 }

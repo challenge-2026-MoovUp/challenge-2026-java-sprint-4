@@ -39,8 +39,7 @@ public class PostagemService {
 
         Usuario autor = usuarioService.buscarAtivo(request.idUsuario());
 
-        Postagem postagem = PostagemMapper.toEntity(request, UUID.randomUUID().toString(), tipo);
-        postagem.setNomeUsuario(autor.getNome());
+        Postagem postagem = PostagemMapper.toEntity(request, UUID.randomUUID().toString(), tipo, autor);
         postagemDAO.cadastrarPostagem(postagem);
 
         autor.adicionarPontos(tipo.getPontos());
@@ -77,7 +76,7 @@ public class PostagemService {
         Postagem postagem = buscarExistente(id);
         postagemDAO.excluirPostagem(id);
 
-        Usuario autor = usuarioDAO.buscarPorId(postagem.getIdUsuario());
+        Usuario autor = usuarioDAO.buscarPorId(postagem.getUsuario().getId());
         if (autor != null) {
             autor.removerPontos(postagem.getTipoPostagem().getPontos());
             usuarioDAO.alterarUsuario(autor);
@@ -93,7 +92,7 @@ public class PostagemService {
             throw new RegraNegocioException("O usuário já curtiu esta postagem");
         }
 
-        curtidaDAO.cadastrarCurtida(new Curtida(usuario.getId(), idPostagem));
+        curtidaDAO.cadastrarCurtida(new Curtida(usuario, postagem));
         postagemDAO.somarCurtida(idPostagem);
         return new CurtidaResponse(idPostagem, postagem.getCurtidas() + 1);
     }

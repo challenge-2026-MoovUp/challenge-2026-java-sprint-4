@@ -2,6 +2,7 @@ package br.com.fiap.MoovUp.dao;
 
 import br.com.fiap.MoovUp.enums.TipoPostagem;
 import br.com.fiap.MoovUp.models.Postagem;
+import br.com.fiap.MoovUp.models.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class PostagemDAO {
 
-    // JOIN com o usuário para trazer o nomeUsuario (não é coluna da POSTAGEM).
+    // JOIN com o usuário para montar o objeto Usuario (id e nome) do autor.
     // STATUS = 'A': postagens de usuários excluídos (inativos) não aparecem
     private static final String SELECT_BASE =
             "SELECT P.POSTAGEM_ID, P.TITULO, P.ID_USUARIO, U.NOME_USUARIO, P.CONTEUDO, P.IMAGEM, P.VIDEO, " +
@@ -29,7 +30,7 @@ public class PostagemDAO {
 
             ps.setString(1, postagem.getId());
             ps.setString(2, postagem.getTitulo());
-            ps.setString(3, postagem.getIdUsuario());
+            ps.setString(3, postagem.getUsuario().getId());
             ps.setString(4, postagem.getConteudo());
             ps.setString(5, postagem.getImagem());
             ps.setString(6, postagem.getVideo());
@@ -125,11 +126,16 @@ public class PostagemDAO {
         }
     }
 
+    // Como no projeto da professora: o objeto relacionado vem só com o que o JOIN traz
     private Postagem mapearPostagem(ResultSet rs) throws SQLException {
-        Postagem postagem = new Postagem(
+        Usuario autor = new Usuario();
+        autor.setId(rs.getString("ID_USUARIO"));
+        autor.setNome(rs.getString("NOME_USUARIO"));
+
+        return new Postagem(
                 rs.getString("POSTAGEM_ID"),
                 rs.getString("TITULO"),
-                rs.getString("ID_USUARIO"),
+                autor,
                 rs.getString("CONTEUDO"),
                 rs.getString("IMAGEM"),
                 rs.getString("VIDEO"),
@@ -137,7 +143,5 @@ public class PostagemDAO {
                 rs.getInt("CURTIDAS"),
                 rs.getObject("DATA_POSTAGEM", LocalDateTime.class)
         );
-        postagem.setNomeUsuario(rs.getString("NOME_USUARIO"));
-        return postagem;
     }
 }

@@ -39,8 +39,7 @@ public class SeguidorService {
             throw new RegraNegocioException("O usuário já segue esta pessoa");
         }
 
-        Seguidor seguidor = new Seguidor(usuario.getId(), seguido.getId());
-        seguidor.setNomeSeguido(seguido.getNome());
+        Seguidor seguidor = new Seguidor(usuario, seguido);
         seguidorDAO.cadastrarSeguidor(seguidor);
         return SeguidorMapper.toDTO(seguidor);
     }

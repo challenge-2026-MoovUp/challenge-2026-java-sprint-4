@@ -2,6 +2,8 @@ package br.com.fiap.MoovUp.dao;
 
 import br.com.fiap.MoovUp.enums.Estacao;
 import br.com.fiap.MoovUp.enums.Linha;
+import br.com.fiap.MoovUp.models.TicketDigital;
+import br.com.fiap.MoovUp.models.Usuario;
 import br.com.fiap.MoovUp.models.Viagem;
 
 import java.sql.Connection;
@@ -21,8 +23,8 @@ public class ViagemDAO {
              PreparedStatement ps = conexao.prepareStatement(sql)) {
 
             ps.setString(1, viagem.getId());
-            ps.setString(2, viagem.getIdUsuario());
-            ps.setString(3, viagem.getIdTicket());
+            ps.setString(2, viagem.getUsuario().getId());
+            ps.setString(3, viagem.getTicket().getId());
             ps.setString(4, viagem.getLinha().name());
             ps.setString(5, viagem.getEstacaoEmbarque().name());
             ps.setInt(6, viagem.getPontosGerados());
@@ -74,11 +76,18 @@ public class ViagemDAO {
         }
     }
 
+    // Usuário e ticket só com o id (é o que a tabela VIAGEM guarda)
     private Viagem mapearViagem(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario();
+        usuario.setId(rs.getString("ID_USUARIO"));
+
+        TicketDigital ticket = new TicketDigital();
+        ticket.setId(rs.getString("ID_TICKET"));
+
         return new Viagem(
                 rs.getString("ID_VIAGEM"),
-                rs.getString("ID_USUARIO"),
-                rs.getString("ID_TICKET"),
+                usuario,
+                ticket,
                 Linha.valueOf(rs.getString("LINHA")),
                 Estacao.valueOf(rs.getString("ESTACAO_EMBARQUE")),
                 rs.getInt("PONTOS_GERADOS"),

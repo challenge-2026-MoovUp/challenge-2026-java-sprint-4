@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 public class ImpactoAmbiental {
     private String id;
-    private String idUsuario;
-    private String idTicket;
-    private String idViagem; // a viagem que gerou este impacto (nulo nos impactos antigos)
+    private Usuario usuario;      // no banco: ID_USUARIO
+    private TicketDigital ticket; // no banco: ID_TICKET
+    private Viagem viagem;        // a viagem que gerou este impacto (null nos impactos antigos)
     private Modalidade modalidade;
     private double co2Evitado;
     private int viagensRealizadas;
@@ -27,10 +27,11 @@ public class ImpactoAmbiental {
     }
 
 
-    public static ImpactoAmbiental criarParaTicket(String idUsuario, String idTicket, Modalidade modalidade) {
+    public static ImpactoAmbiental criarParaViagem(Viagem viagem, Modalidade modalidade) {
         ImpactoAmbiental impacto = new ImpactoAmbiental();
-        impacto.setIdUsuario(idUsuario);
-        impacto.setIdTicket(idTicket);
+        impacto.setUsuario(viagem.getUsuario());
+        impacto.setTicket(viagem.getTicket());
+        impacto.setViagem(viagem);
         impacto.setModalidade(modalidade);
         impacto.setViagensRealizadas(1);
         impacto.setKmPercorridos(modalidade.getKm());

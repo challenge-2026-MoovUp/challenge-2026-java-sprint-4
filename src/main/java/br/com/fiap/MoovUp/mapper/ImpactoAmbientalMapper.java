@@ -8,7 +8,7 @@ public class ImpactoAmbientalMapper {
     public static ImpactoResponse toDTO(ImpactoAmbiental impacto) {
         return new ImpactoResponse(
                 impacto.getId(),
-                impacto.getIdTicket(),
+                impacto.getTicket().getId(),
                 impacto.getModalidade(),
                 impacto.getCo2Evitado(),
                 impacto.getKmPercorridos(),
