@@ -55,6 +55,15 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/nome/{nome}")
+    public ResponseEntity<?> buscarPorNome(@PathVariable String nome) {
+        try {
+            return ResponseEntity.ok(usuarioService.buscarPorNome(nome));
+        } catch (RuntimeException e) {
+            return TratadorDeErros.tratarErro(e);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable String id) {
         try {

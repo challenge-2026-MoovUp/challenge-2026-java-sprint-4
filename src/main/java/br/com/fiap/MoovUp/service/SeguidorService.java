@@ -23,14 +23,25 @@ public class SeguidorService {
         this.usuarioService = usuarioService;
     }
 
-    // Ordem: 400 (sem idSeguido) -> 404 (usuário/seguido) -> 422 (ele mesmo / já segue)
+    // Ordem: 400 (nem id nem nome, ou os dois) -> 404 (usuário/seguido) -> 422 (ele mesmo / já segue)
     public SeguidoResponse seguir(String idUsuario, SeguirRequest request) {
-        if (request.idSeguido() == null || request.idSeguido().trim().isEmpty()) {
-            throw new IllegalArgumentException("O idSeguido é obrigatório");
+        boolean temId = request.idSeguido() != null && !request.idSeguido().trim().isEmpty();
+        boolean temNome = request.nomeSeguido() != null && !request.nomeSeguido().trim().isEmpty();
+
+        if (!temId && !temNome) {
+            throw new IllegalArgumentException("Informe o idSeguido ou o nomeSeguido");
+        }
+        if (temId && temNome) {
+            throw new IllegalArgumentException("Informe só um: o idSeguido ou o nomeSeguido");
         }
 
         Usuario usuario = usuarioService.buscarAtivo(idUsuario);
-        Usuario seguido = usuarioService.buscarAtivo(request.idSeguido());
+        Usuario seguido;
+        if (temId) {
+            seguido = usuarioService.buscarAtivo(request.idSeguido().trim());
+        } else {
+            seguido = usuarioService.buscarAtivoPorNome(request.nomeSeguido());
+        }
 
         if (usuario.getId().equals(seguido.getId())) {
             throw new RegraNegocioException("O usuário não pode seguir a si mesmo");

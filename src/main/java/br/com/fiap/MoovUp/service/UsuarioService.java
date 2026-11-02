@@ -20,6 +20,11 @@ import java.util.UUID;
 @Service
 public class UsuarioService {
 
+    // GET /usuarios/nome/pontos bateria também com GET /usuarios/{id}/pontos (id = "nome"), e o Spring
+    // escolhe a segunda: um usuário com esses nomes nunca seria achado pela busca por nome.
+    // Toda rota nova no formato /usuarios/{id}/xxx precisa ter o "xxx" incluído aqui.
+    private static final List<String> NOMES_RESERVADOS = List.of("pontos", "impacto", "seguindo", "resgates", "viagens");
+
     // DAOs criados com new, como no projeto da professora (decisão de 29/10)
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
     private final ImpactoAmbientalDAO impactoDAO = new ImpactoAmbientalDAO();
@@ -61,6 +66,11 @@ public class UsuarioService {
 
     public UsuarioResponse buscarPorId(String id) {
         return UsuarioMapper.toDTO(buscarAtivo(id));
+    }
+
+    // GET /usuarios/nome/{nome}: o front acha o usuário pelo nome e daí em diante usa o id
+    public UsuarioResponse buscarPorNome(String nome) {
+        return UsuarioMapper.toDTO(buscarAtivoPorNome(nome));
     }
 
     public UsuarioResponse alterar(String id, UsuarioAlteracaoRequest request) {
@@ -121,6 +131,18 @@ public class UsuarioService {
         return usuario;
     }
 
+    // O nome é único (sem diferenciar maiúsculas: o DAO compara com UPPER). Usado também pelo SeguidorService
+    public Usuario buscarAtivoPorNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome é obrigatório");
+        }
+        Usuario usuario = usuarioDAO.buscarPorNome(nome.trim());
+        if (usuario == null || usuario.getStatus() != StatusUsuario.A) {
+            throw new RecursoNaoEncontradoException("Nenhum usuário com o nome " + nome.trim());
+        }
+        return usuario;
+    }
+
     // Validações dos dados do JSON (IllegalArgumentException vira 400 no controller)
     private void validarNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
@@ -128,6 +150,9 @@ public class UsuarioService {
         }
         if (nome.trim().length() > 40) {
             throw new IllegalArgumentException("O nome pode ter no máximo 40 caracteres");
+        }
+        if (NOMES_RESERVADOS.contains(nome.trim().toLowerCase())) {
+            throw new IllegalArgumentException("O nome " + nome.trim() + " é reservado pelo sistema, escolha outro");
         }
     }
 
