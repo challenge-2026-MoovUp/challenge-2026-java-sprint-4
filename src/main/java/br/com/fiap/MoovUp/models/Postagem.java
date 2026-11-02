@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Postagem {
     private String id;
     private String titulo;
-    private Usuario usuario; // autor (no banco: ID_USUARIO)
+    private Usuario usuario;
     private String conteudo;
     private String imagem;
     private String video;
@@ -19,7 +19,6 @@ public class Postagem {
     private int curtidas;
     private LocalDateTime dataPostagem;
 
-    // Vazio: usado pelos DAOs quando a postagem vem de um JOIN (só o id preenchido)
     public Postagem() {
     }
 

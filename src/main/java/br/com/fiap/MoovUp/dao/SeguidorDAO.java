@@ -29,7 +29,6 @@ public class SeguidorDAO {
         }
     }
 
-    // O service usa para o 422 (já segue) no POST e para o 404 (não segue) no DELETE
     public boolean existeSeguidor(String idUsuario, String idSeguido) {
         String sql = "SELECT 1 FROM SEGUIDOR WHERE ID_USUARIO = ? AND ID_SEGUIDO = ?";
 
@@ -47,7 +46,6 @@ public class SeguidorDAO {
         }
     }
 
-    // Quem o usuário segue. O JOIN traz o nome e esconde os inativos (STATUS = 'A').
     public List<Seguidor> listarSeguidos(String idUsuario) {
         String sql = "SELECT S.ID_USUARIO, S.ID_SEGUIDO, S.DATA_SEGUIDO, U.NOME_USUARIO " +
                 "FROM SEGUIDOR S JOIN USUARIO_MOOVUP U ON U.ID_USUARIO = S.ID_SEGUIDO " +
@@ -86,7 +84,6 @@ public class SeguidorDAO {
         }
     }
 
-    // O seguido vem com id e nome (do JOIN); quem segue, só com o id
     private Seguidor mapearSeguidor(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setId(rs.getString("ID_USUARIO"));

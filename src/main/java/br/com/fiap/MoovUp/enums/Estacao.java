@@ -1,10 +1,6 @@
 package br.com.fiap.MoovUp.enums;
 
-// Estações de embarque (listas do usuário, 2026), agrupadas pela primeira linha em que aparecem.
-// Estação de baldeação (ex.: Luz, Brás, Palmeiras-Barra Funda) é uma constante só,
-// reaproveitada por cada linha no enum Linha.
 public enum Estacao {
-    // Linha 1 - Azul
     JABAQUARA("Jabaquara-Comitê Paralímpico Brasileiro"),
     CONCEICAO("Conceição"),
     SAO_JUDAS("São Judas"),
@@ -29,7 +25,6 @@ public enum Estacao {
     PARADA_INGLESA("Parada Inglesa"),
     TUCURUVI("Tucuruvi"),
 
-    // Linha 2 - Verde
     VILA_PRUDENTE("Vila Prudente"),
     TAMANDUATEI("Tamanduateí"),
     SACOMA("Sacomã"),
@@ -43,7 +38,6 @@ public enum Estacao {
     SUMARE("Santuário N. Sra. de Fátima-Sumaré"),
     VILA_MADALENA("Vila Madalena"),
 
-    // Linha 3 - Vermelha
     CORINTHIANS_ITAQUERA("Corinthians-Itaquera"),
     ARTUR_ALVIM("Artur Alvim"),
     PATRIARCA("Patriarca-Vila Ré"),
@@ -62,7 +56,6 @@ public enum Estacao {
     MARECHAL_DEODORO("Marechal Deodoro"),
     PALMEIRAS_BARRA_FUNDA("Palmeiras-Barra Funda"),
 
-    // Linha 4 - Amarela
     HIGIENOPOLIS_MACKENZIE("Higienópolis-Mackenzie"),
     PAULISTA("Paulista-Pernambucanas"),
     OSCAR_FREIRE("Oscar Freire"),
@@ -73,7 +66,6 @@ public enum Estacao {
     SAO_PAULO_MORUMBI("São Paulo-Morumbi"),
     VILA_SONIA("Vila Sônia-Professora Elisabeth Tenreiro"),
 
-    // Linha 5 - Lilás
     CAPAO_REDONDO("Capão Redondo"),
     CAMPO_LIMPO("Campo Limpo"),
     VILA_DAS_BELEZAS("Vila das Belezas"),
@@ -90,7 +82,6 @@ public enum Estacao {
     AACD_SERVIDOR("AACD-Servidor"),
     HOSPITAL_SAO_PAULO("Hospital São Paulo"),
 
-    // Linha 6 - Laranja
     BRASILANDIA("Brasilândia"),
     MARISTELA("Maristela"),
     ITABERABA("Itaberaba-Hospital Vila Penteado"),
@@ -105,7 +96,6 @@ public enum Estacao {
     QUATORZE_BIS("14 Bis-Saracura"),
     BELA_VISTA("Bela Vista"),
 
-    // Linha 15 - Prata
     ORATORIO("Oratório"),
     SAO_LUCAS("São Lucas"),
     CAMILO_HADDAD("Camilo Haddad"),
@@ -117,7 +107,6 @@ public enum Estacao {
     SAO_MATEUS("São Mateus"),
     JARDIM_COLONIAL("Jardim Colonial"),
 
-    // Linha 17 - Ouro
     MORUMBI("Morumbi"),
     CHUCRI_ZAIDAN("Chucri Zaidan"),
     VILA_CORDEIRO("Vila Cordeiro"),
@@ -126,7 +115,6 @@ public enum Estacao {
     AEROPORTO_CONGONHAS("Aeroporto de Congonhas"),
     WASHINGTON_LUIS("Washington Luís"),
 
-    // Linha 7 - Rubi
     LAPA("Lapa"),
     PIQUERI("Piqueri"),
     PIRITUBA("Pirituba"),
@@ -143,7 +131,6 @@ public enum Estacao {
     VARZEA_PAULISTA("Várzea Paulista"),
     JUNDIAI("Jundiaí"),
 
-    // Linha 8 - Diamante
     JULIO_PRESTES("Júlio Prestes"),
     DOMINGOS_DE_MORAES("Domingos de Moraes"),
     IMPERATRIZ_LEOPOLDINA("Imperatriz Leopoldina"),
@@ -166,7 +153,6 @@ public enum Estacao {
     AMBUITA("Ambuitá"),
     AMADOR_BUENO("Amador Bueno"),
 
-    // Linha 9 - Esmeralda
     CEASA("Ceasa"),
     VILLA_LOBOS_JAGUARE("Villa Lobos-Jaguaré"),
     CIDADE_UNIVERSITARIA("Cidade Universitária"),
@@ -185,7 +171,6 @@ public enum Estacao {
     MENDES_VILA_NATAL("Bruno Covas/Mendes-Vila Natal"),
     VARGINHA("Varginha"),
 
-    // Linha 10 - Turquesa
     JUVENTUS_MOOCA("Juventus-Mooca"),
     IPIRANGA("Ipiranga"),
     SAO_CAETANO_DO_SUL("São Caetano do Sul"),
@@ -198,7 +183,6 @@ public enum Estacao {
     RIBEIRAO_PIRES("Ribeirão Pires-Antônio Bespalec"),
     RIO_GRANDE_DA_SERRA("Rio Grande da Serra"),
 
-    // Linha 11 - Coral
     DOM_BOSCO("Dom Bosco"),
     JOSE_BONIFACIO("José Bonifácio"),
     GUAIANASES("Guaianases"),
@@ -212,7 +196,6 @@ public enum Estacao {
     MOGI_DAS_CRUZES("Mogi das Cruzes"),
     ESTUDANTES("Estudantes"),
 
-    // Linha 12 - Safira
     ENGENHEIRO_GOULART("Engenheiro Goulart"),
     USP_LESTE("USP Leste"),
     COMENDADOR_ERMELINO("Comendador Ermelino"),
@@ -224,7 +207,6 @@ public enum Estacao {
     ITAQUAQUECETUBA("Itaquaquecetuba"),
     ARACARE("Aracaré"),
 
-    // Linha 13 - Jade
     GUARULHOS_CECAP("Guarulhos-Cecap"),
     AEROPORTO_GUARULHOS("Aeroporto-Guarulhos");
 

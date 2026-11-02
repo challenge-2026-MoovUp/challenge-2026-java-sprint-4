@@ -6,7 +6,6 @@ import br.com.fiap.MoovUp.models.Viagem;
 
 public class ViagemMapper {
 
-    // modalidade e CO₂ não são colunas da VIAGEM: saem da linha (enum) e da regra da Modalidade
     public static ViagemResponse toDTO(Viagem viagem) {
         Modalidade modalidade = viagem.getLinha().getModalidade();
         return new ViagemResponse(

@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// Viagem = gamificação: depois de passar o ticket na catraca, o usuário registra a viagem,
-// ganha pontos e soma impacto ambiental evitado.
 @Service
 public class ViagemService {
 
@@ -56,37 +54,29 @@ public class ViagemService {
 
         TicketDigital ticket = ticketService.buscarExistente(request.idTicket().trim());
 
-        // Regra: o ticket precisa ser do usuário (senão daria para ganhar pontos com o ticket de outra pessoa)
         if (ticket.getUsuario() == null || !usuario.getId().equals(ticket.getUsuario().getId())) {
             throw new RegraNegocioException("Este ticket não pertence ao usuário");
         }
 
-        // Regra: só registra a viagem depois que o ticket passou na catraca (PATCH /tickets/{id}/uso)
         if (ticket.getStatus() != StatusTicket.UTILIZADO) {
             throw new RegraNegocioException("Use o ticket na catraca antes de registrar a viagem (status atual: " + ticket.getStatus() + ")");
         }
 
-        // Regra: 1 viagem por ticket
         if (viagemDAO.contarPorTicket(ticket.getId()) >= VIAGENS_POR_TICKET) {
             throw new RegraNegocioException("Já existe uma viagem registrada para este ticket");
         }
 
-        // Regra: a estação precisa ser da linha escolhida (a linha não precisa ser da modalidade do ticket:
-        // quem bloqueia o ticket errado é a catraca, lendo o QR code)
         if (!linha.getEstacoes().contains(estacao)) {
             throw new RegraNegocioException("A estação " + estacao.getNome() + " não pertence à " + linha.getNome());
         }
 
-        // 1) grava a viagem
         Viagem viagem = new Viagem(UUID.randomUUID().toString(), usuario, ticket,
                 linha, estacao, PONTOS_POR_VIAGEM, LocalDateTime.now().withNano(0));
         viagemDAO.cadastrarViagem(viagem);
 
-        // 2) pontos para o usuário
         usuario.adicionarPontos(PONTOS_POR_VIAGEM);
         usuarioDAO.alterarUsuario(usuario);
 
-        // 3) impacto ambiental, pela modalidade da linha em que a pessoa viajou
         ImpactoAmbiental impacto = ImpactoAmbiental.criarParaViagem(viagem, linha.getModalidade());
         impacto.setId(UUID.randomUUID().toString());
         impactoDAO.cadastrarImpactoAmbiental(impacto);
@@ -104,7 +94,6 @@ public class ViagemService {
         return resposta;
     }
 
-    // GET /linhas?modalidade=METRO (sem o filtro, devolve todas)
     public List<LinhaResponse> listarLinhas(String modalidade) {
         Modalidade filtro = null;
         if (modalidade != null) {

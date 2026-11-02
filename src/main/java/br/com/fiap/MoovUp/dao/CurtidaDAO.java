@@ -25,7 +25,6 @@ public class CurtidaDAO {
         }
     }
 
-    // O service usa para devolver 422 antes de tentar o INSERT repetido
     public boolean existeCurtida(String idUsuario, String idPostagem) {
         String sql = "SELECT 1 FROM CURTIDA WHERE ID_USUARIO = ? AND POSTAGEM_ID = ?";
 

@@ -25,12 +25,10 @@ public class PostagemService {
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
     private final UsuarioService usuarioService;
 
-    // O Spring entrega o UsuarioService pronto (injeção pelo construtor)
     public PostagemService(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    // Regra: a postagem dá pontos ao autor conforme o tipo (TEXTO 50, IMAGEM 100, VIDEO 150)
     public PostagemResponse criar(PostagemRequest request) {
         TipoPostagem tipo = converterTipo(request.tipoPostagem());
         validarTitulo(request.titulo());
@@ -71,7 +69,6 @@ public class PostagemService {
         return PostagemMapper.toDTO(postagem);
     }
 
-    // Regra: excluir a postagem tira do autor os pontos que ela deu
     public void excluir(String id) {
         Postagem postagem = buscarExistente(id);
         postagemDAO.excluirPostagem(id);
@@ -83,7 +80,6 @@ public class PostagemService {
         }
     }
 
-    // Regra: cada usuário curte uma postagem uma vez só
     public CurtidaResponse curtir(String idPostagem, CurtidaRequest request) {
         Postagem postagem = buscarExistente(idPostagem);
         Usuario usuario = usuarioService.buscarAtivo(request.idUsuario());
@@ -97,7 +93,6 @@ public class PostagemService {
         return new CurtidaResponse(idPostagem, postagem.getCurtidas() + 1);
     }
 
-    // Usado também pelo ComentarioService
     public Postagem buscarExistente(String id) {
         Postagem postagem = postagemDAO.buscarPorId(id);
         if (postagem == null) {
@@ -106,7 +101,6 @@ public class PostagemService {
         return postagem;
     }
 
-    // valueOf lança IllegalArgumentException se o texto não for TEXTO, IMAGEM ou VIDEO
     private TipoPostagem converterTipo(String tipo) {
         if (tipo == null) {
             throw new IllegalArgumentException("O tipo da postagem é obrigatório (TEXTO, IMAGEM ou VIDEO)");
@@ -136,7 +130,6 @@ public class PostagemService {
         }
     }
 
-    // Regra: IMAGEM exige o link da imagem e VIDEO exige o link do vídeo (senão ganharia pontos sem mídia)
     private void validarMidia(TipoPostagem tipo, String imagem, String video) {
         if (tipo == TipoPostagem.IMAGEM && (imagem == null || imagem.trim().isEmpty())) {
             throw new IllegalArgumentException("Postagem do tipo IMAGEM precisa do link da imagem");

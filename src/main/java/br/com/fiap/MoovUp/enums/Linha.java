@@ -2,8 +2,6 @@ package br.com.fiap.MoovUp.enums;
 
 import java.util.List;
 
-// Linhas de São Paulo com as estações na ordem do trajeto (listas do usuário, 2026).
-// O código é a cor, que não se repete. Os monotrilhos (Prata e Ouro) entram como METRO.
 public enum Linha {
     AZUL("Linha 1 - Azul", Modalidade.METRO,
             Estacao.JABAQUARA, Estacao.CONCEICAO, Estacao.SAO_JUDAS, Estacao.SAUDE, Estacao.PRACA_DA_ARVORE,
@@ -84,7 +82,6 @@ public enum Linha {
     private final Modalidade modalidade;
     private final List<Estacao> estacoes;
 
-    // "Estacao... estacoes" aceita quantas estações forem passadas
     Linha(String nome, Modalidade modalidade, Estacao... estacoes) {
         this.nome = nome;
         this.modalidade = modalidade;

@@ -58,7 +58,6 @@ public class ViagemDAO {
         return viagens;
     }
 
-    // Usado para a regra de no máximo 2 viagens por ticket
     public int contarPorTicket(String idTicket) {
         String sql = "SELECT COUNT(*) AS TOTAL FROM VIAGEM WHERE ID_TICKET = ?";
 
@@ -68,7 +67,7 @@ public class ViagemDAO {
             ps.setString(1, idTicket);
 
             try (ResultSet rs = ps.executeQuery()) {
-                rs.next(); // COUNT sempre devolve uma linha
+                rs.next();
                 return rs.getInt("TOTAL");
             }
         } catch (SQLException e) {
@@ -76,7 +75,6 @@ public class ViagemDAO {
         }
     }
 
-    // Usuário e ticket só com o id (é o que a tabela VIAGEM guarda)
     private Viagem mapearViagem(ResultSet rs) throws SQLException {
         Usuario usuario = new Usuario();
         usuario.setId(rs.getString("ID_USUARIO"));

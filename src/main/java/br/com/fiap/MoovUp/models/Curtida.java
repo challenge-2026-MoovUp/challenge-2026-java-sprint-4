@@ -5,12 +5,11 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-// Tabela CURTIDA: a PK (ID_USUARIO, POSTAGEM_ID) impede o mesmo usuário de curtir duas vezes
 @Getter
 @Setter
 public class Curtida {
-    private Usuario usuario;   // quem curtiu (no banco: ID_USUARIO)
-    private Postagem postagem; // no banco: POSTAGEM_ID
+    private Usuario usuario;
+    private Postagem postagem;
     private LocalDateTime dataCurtida;
 
     public Curtida(Usuario usuario, Postagem postagem) {

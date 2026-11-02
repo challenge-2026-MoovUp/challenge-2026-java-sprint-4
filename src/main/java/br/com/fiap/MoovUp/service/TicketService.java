@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// Substitui a antiga EstoqueTickets: o estoque são os tickets DISPONIVEL da tabela TICKET_DIGITAL
 @Service
 public class TicketService {
 
@@ -25,7 +24,6 @@ public class TicketService {
 
     private final TicketDigitalDAO ticketDAO = new TicketDigitalDAO();
 
-    // Abastece o estoque com N tickets novos (DISPONIVEL, sem dono)
     public List<TicketResponse> abastecer(TicketRequest request) {
         Modalidade modalidade = converterModalidade(request.modalidade());
 
@@ -42,7 +40,6 @@ public class TicketService {
         return criados;
     }
 
-    // Os dois filtros são opcionais (podem vir null)
     public List<TicketResponse> listar(String status, String modalidade) {
         StatusTicket filtroStatus = null;
         if (status != null) {
@@ -74,7 +71,6 @@ public class TicketService {
         );
     }
 
-    // Uso manual pelo admin (o caminho normal é registrar a viagem)
     public TicketResponse marcarUso(String id) {
         TicketDigital ticket = buscarExistente(id);
 
@@ -88,7 +84,6 @@ public class TicketService {
         return TicketMapper.toDTO(ticket);
     }
 
-    // Só sai do estoque o que ainda não foi resgatado: os outros têm dono, viagens e impacto ligados
     public void excluir(String id) {
         TicketDigital ticket = buscarExistente(id);
 
@@ -98,7 +93,6 @@ public class TicketService {
         ticketDAO.excluirTicket(id);
     }
 
-    // Usado também pelo ResgateService e pelo ViagemService
     public TicketDigital buscarExistente(String id) {
         TicketDigital ticket = ticketDAO.buscarPorId(id);
         if (ticket == null) {
@@ -107,7 +101,6 @@ public class TicketService {
         return ticket;
     }
 
-    // Regra: o ticket vale até a data de expiração. Se passou, vira EXPIRADO no banco e a operação é recusada.
     public void verificarValidade(TicketDigital ticket) {
         if (ticket.getDataExpiracao().isBefore(LocalDate.now())) {
             ticketDAO.alterarStatus(ticket.getId(), StatusTicket.EXPIRADO);
@@ -115,7 +108,6 @@ public class TicketService {
         }
     }
 
-    // Para abastecer e resgatar: só METRO e TREM (o ônibus saiu em 01/11)
     public Modalidade converterModalidade(String modalidade) {
         Modalidade convertida = converterModalidadeFiltro(modalidade);
         if (convertida == Modalidade.ONIBUS) {
@@ -124,7 +116,6 @@ public class TicketService {
         return convertida;
     }
 
-    // No filtro da listagem o ONIBUS é aceito, para ainda dar para ver os tickets antigos
     private Modalidade converterModalidadeFiltro(String modalidade) {
         if (modalidade == null) {
             throw new IllegalArgumentException("A modalidade é obrigatória (METRO ou TREM)");

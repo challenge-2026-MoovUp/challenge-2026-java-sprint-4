@@ -14,8 +14,6 @@ import java.util.List;
 
 public class PostagemDAO {
 
-    // JOIN com o usuário para montar o objeto Usuario (id e nome) do autor.
-    // STATUS = 'A': postagens de usuários excluídos (inativos) não aparecem
     private static final String SELECT_BASE =
             "SELECT P.POSTAGEM_ID, P.TITULO, P.ID_USUARIO, U.NOME_USUARIO, P.CONTEUDO, P.IMAGEM, P.VIDEO, " +
             "P.TIPO_POSTAGEM, P.CURTIDAS, P.DATA_POSTAGEM " +
@@ -82,7 +80,6 @@ public class PostagemDAO {
         return postagens;
     }
 
-    // Só título e conteúdo podem mudar: o tipo define os pontos ganhos na criação
     public void alterarPostagem(Postagem postagem) {
         String sql = "UPDATE POSTAGEM SET TITULO = ?, CONTEUDO = ? WHERE POSTAGEM_ID = ?";
 
@@ -99,7 +96,6 @@ public class PostagemDAO {
         }
     }
 
-    // NVL: postagens antigas podem ter CURTIDAS nulo
     public void somarCurtida(String id) {
         String sql = "UPDATE POSTAGEM SET CURTIDAS = NVL(CURTIDAS, 0) + 1 WHERE POSTAGEM_ID = ?";
 
@@ -126,7 +122,6 @@ public class PostagemDAO {
         }
     }
 
-    // Como no projeto da professora: o objeto relacionado vem só com o que o JOIN traz
     private Postagem mapearPostagem(ResultSet rs) throws SQLException {
         Usuario autor = new Usuario();
         autor.setId(rs.getString("ID_USUARIO"));

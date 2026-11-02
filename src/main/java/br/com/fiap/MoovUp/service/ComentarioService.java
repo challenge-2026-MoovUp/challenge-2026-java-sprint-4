@@ -26,7 +26,6 @@ public class ComentarioService {
         this.usuarioService = usuarioService;
     }
 
-    // Regra: a postagem e o usuário precisam existir
     public ComentarioResponse criar(String idPostagem, ComentarioRequest request) {
         Postagem postagem = postagemService.buscarExistente(idPostagem);
         validarConteudo(request.conteudo());

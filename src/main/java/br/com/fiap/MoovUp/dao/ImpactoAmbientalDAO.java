@@ -102,7 +102,6 @@ public class ImpactoAmbientalDAO {
         return impactos;
     }
 
-    // Resumo do GET /usuarios/{id}/impacto. NVL troca o null do SUM (usuário sem impactos) por 0
     public ImpactoResumoResponse resumirPorUsuario(String idUsuario) {
         String sql = "SELECT NVL(SUM(VIAGENS_REALIZADAS), 0) AS TOTAL_VIAGENS, NVL(SUM(KM_PERCORRIDOS), 0) AS TOTAL_KM, " +
                 "NVL(SUM(CO2_EVITADO), 0) AS TOTAL_CO2 FROM IMPACTO_AMBIENTAL_MOOVPASS WHERE ID_USUARIO = ?";
@@ -113,7 +112,7 @@ public class ImpactoAmbientalDAO {
             ps.setString(1, idUsuario);
 
             try (ResultSet rs = ps.executeQuery()) {
-                rs.next(); // SUM sempre devolve uma linha
+                rs.next();
                 return new ImpactoResumoResponse(
                         idUsuario,
                         rs.getInt("TOTAL_VIAGENS"),
@@ -143,7 +142,6 @@ public class ImpactoAmbientalDAO {
         ImpactoAmbiental impacto = new ImpactoAmbiental();
         impacto.setId(rs.getString("ID_IMPACTO"));
 
-        // Objetos relacionados só com o id (é o que a tabela guarda)
         Usuario usuario = new Usuario();
         usuario.setId(rs.getString("ID_USUARIO"));
         impacto.setUsuario(usuario);
@@ -152,7 +150,6 @@ public class ImpactoAmbientalDAO {
         ticket.setId(rs.getString("ID_TICKET"));
         impacto.setTicket(ticket);
 
-        // Impactos antigos (de antes das viagens) não têm viagem
         String idViagem = rs.getString("ID_VIAGEM");
         if (idViagem != null) {
             Viagem viagem = new Viagem();

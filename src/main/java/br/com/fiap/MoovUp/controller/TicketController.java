@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Gestão do estoque (admin)
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -27,8 +26,6 @@ public class TicketController {
         }
     }
 
-    // @RequestParam lê os filtros da URL: /tickets?status=DISPONIVEL&modalidade=METRO
-    // required = false: sem o filtro na URL, o valor chega como null
     @GetMapping
     public ResponseEntity<?> listar(@RequestParam(required = false) String status,
                                     @RequestParam(required = false) String modalidade) {

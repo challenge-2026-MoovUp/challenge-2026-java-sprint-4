@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-// Resgate = o usuário troca pontos por um ticket do estoque
 @Service
 public class ResgateService {
 
@@ -35,23 +34,19 @@ public class ResgateService {
         Modalidade modalidade = ticketService.converterModalidade(request.modalidade());
         FormaRecebimento forma = converterForma(request.formaRecebimento());
 
-        // Regra: precisa ter ticket da modalidade no estoque
         TicketDigital ticket = ticketDAO.buscarDisponivel(modalidade);
         if (ticket == null) {
             throw new RegraNegocioException("Não há tickets de " + modalidade + " no estoque");
         }
 
-        // Regra: o saldo precisa cobrir o custo do ticket
         if (usuario.getSaldoPontos() < ticket.getCustoEmPontos()) {
             throw new RegraNegocioException("Saldo insuficiente: o ticket custa " + ticket.getCustoEmPontos()
                     + " pontos e o usuário tem " + usuario.getSaldoPontos());
         }
 
-        // O model faz a troca: debita os pontos, define o dono, RESERVADO, validade e QR code
         ticket.setFormaRecebimento(forma);
         ticket.resgatar(usuario);
 
-        // Primeiro garante o ticket (UPDATE condicional), depois debita o saldo
         if (!ticketDAO.reservarTicket(ticket)) {
             throw new RegraNegocioException("Esse ticket acabou de ser resgatado por outra pessoa, tente novamente");
         }
@@ -60,7 +55,6 @@ public class ResgateService {
         return new ResgateResponse(TicketMapper.toDTO(ticket), usuario.getSaldoPontos());
     }
 
-    // Os tickets que o usuário já resgatou
     public List<TicketResponse> listar(String idUsuario) {
         usuarioService.buscarAtivo(idUsuario);
 

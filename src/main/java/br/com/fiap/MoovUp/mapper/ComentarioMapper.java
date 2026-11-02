@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 public class ComentarioMapper {
 
-    // A postagem (da URL) e o autor (do JSON) já foram buscados no banco pelo service
     public static Comentario toEntity(ComentarioRequest request, String id, Postagem postagem, Usuario autor) {
         return new Comentario(id, postagem, autor, request.conteudo().trim(), 0, LocalDateTime.now().withNano(0));
     }

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 public class PostagemMapper {
 
-    // O ID, o tipo (já convertido para enum) e o autor (já buscado no banco) vêm do service
     public static Postagem toEntity(PostagemRequest request, String id, TipoPostagem tipo, Usuario autor) {
         return new Postagem(
                 id,
@@ -25,7 +24,6 @@ public class PostagemMapper {
         );
     }
 
-    // pontosGerados não é coluna: sai do enum TipoPostagem
     public static PostagemResponse toDTO(Postagem postagem) {
         return new PostagemResponse(
                 postagem.getId(),

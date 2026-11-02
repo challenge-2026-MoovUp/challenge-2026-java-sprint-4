@@ -7,13 +7,11 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-// As validações (status, validade, saldo, dono, limite de viagens) ficam nos services.
-// Aqui ficam só as ações que mudam o estado do ticket.
 @Getter
 @Setter
 public abstract class Ticket implements Resgatavel {
     protected String id;
-    protected Usuario usuario; // dono do ticket (no banco: ID_USUARIO); null enquanto está no estoque
+    protected Usuario usuario;
     protected double tarifaReais;
     protected int custoEmPontos;
     protected StatusTicket status;

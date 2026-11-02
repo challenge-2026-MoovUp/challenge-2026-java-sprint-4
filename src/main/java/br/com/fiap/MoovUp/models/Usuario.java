@@ -17,7 +17,6 @@ public class Usuario {
     private StatusUsuario status;
     private LocalDate dataCadastro;
 
-    // Vazio: usado pelos DAOs quando o usuário vem de um JOIN (só id e nome preenchidos)
     public Usuario() {
     }
 
@@ -35,7 +34,6 @@ public class Usuario {
         this.saldoPontos += qtd;
     }
 
-    // Math.max: se o saldo já foi gasto, para em 0 (o banco não aceita saldo negativo)
     public void removerPontos(int qtd){
         this.saldoPontos = Math.max(0, this.saldoPontos - qtd);
     }

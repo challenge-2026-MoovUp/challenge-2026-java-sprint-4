@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Sem @RequestMapping na classe: os caminhos são /usuarios/{id}/viagens e /linhas
 @RestController
 public class ViagemController {
 
@@ -35,7 +34,6 @@ public class ViagemController {
         }
     }
 
-    // /linhas?modalidade=METRO (o filtro é opcional)
     @GetMapping("/linhas")
     public ResponseEntity<?> listarLinhas(@RequestParam(required = false) String modalidade) {
         try {

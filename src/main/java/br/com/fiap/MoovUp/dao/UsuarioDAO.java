@@ -44,7 +44,6 @@ public class UsuarioDAO {
         return buscarUm(SELECT_BASE + " WHERE UPPER(EMAIL) = UPPER(?)", email);
     }
 
-    // Usado para checar se o nome já existe (NOME_USUARIO é UNIQUE no banco)
     public Usuario buscarPorNome(String nome) {
         return buscarUm(SELECT_BASE + " WHERE UPPER(NOME_USUARIO) = UPPER(?)", nome);
     }
@@ -71,12 +70,10 @@ public class UsuarioDAO {
         return listarPorStatus(SELECT_BASE + " WHERE STATUS = ? ORDER BY NOME_USUARIO", status);
     }
 
-    // Ranking: só os ativos, do maior saldo para o menor
     public List<Usuario> listarRanking() {
         return listarPorStatus(SELECT_BASE + " WHERE STATUS = ? ORDER BY SALDO_PONTOS DESC, NOME_USUARIO", StatusUsuario.A);
     }
 
-    // A senha não muda aqui: o PUT do contrato só tem nome e email
     public void alterarUsuario(Usuario usuario) {
         String sql = "UPDATE USUARIO_MOOVUP SET NOME_USUARIO = ?, EMAIL = ?, SALDO_PONTOS = ?, STATUS = ? WHERE ID_USUARIO = ?";
 
@@ -95,7 +92,6 @@ public class UsuarioDAO {
         }
     }
 
-    // DELETE físico. A API não usa: o DELETE /usuarios/{id} faz exclusão lógica (STATUS = 'I')
     public void excluirUsuario(String id) {
         String sql = "DELETE FROM USUARIO_MOOVUP WHERE ID_USUARIO = ?";
 
@@ -109,7 +105,6 @@ public class UsuarioDAO {
         }
     }
 
-    // SELECT que devolve no máximo um usuário (por ID, email ou nome)
     private Usuario buscarUm(String sql, String valor) {
         try (Connection conexao = ConnectionFactory.obterConexao();
              PreparedStatement ps = conexao.prepareStatement(sql)) {

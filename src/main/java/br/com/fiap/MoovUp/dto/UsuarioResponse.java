@@ -4,7 +4,6 @@ import br.com.fiap.MoovUp.enums.StatusUsuario;
 
 import java.time.LocalDate;
 
-// Usuário devolvido pela API. A senha nunca volta no JSON.
 public record UsuarioResponse(
         String id,
         String nome,

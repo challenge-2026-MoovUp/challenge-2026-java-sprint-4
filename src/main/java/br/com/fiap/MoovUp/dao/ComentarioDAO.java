@@ -14,7 +14,6 @@ import java.util.List;
 
 public class ComentarioDAO {
 
-    // JOIN com o usuário para montar o objeto Usuario (id e nome) do autor
     private static final String SELECT_BASE =
             "SELECT C.COMENTARIO_ID, C.POSTAGEM_ID, C.ID_USUARIO, U.NOME_USUARIO, C.CONTEUDO, C.CURTIDAS, C.DATA_COMENTARIO " +
             "FROM COMENTARIO C JOIN USUARIO_MOOVUP U ON U.ID_USUARIO = C.ID_USUARIO";
@@ -92,7 +91,6 @@ public class ComentarioDAO {
         }
     }
 
-    // Objetos relacionados só com o que a consulta traz: a postagem só com o id
     private Comentario mapearComentario(ResultSet rs) throws SQLException {
         Postagem postagem = new Postagem();
         postagem.setId(rs.getString("POSTAGEM_ID"));

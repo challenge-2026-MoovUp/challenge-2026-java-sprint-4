@@ -11,8 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-// Libera o front (outro domínio/porta) para chamar a API pelo navegador.
-// Sem esses cabeçalhos, o navegador bloqueia a resposta (erro de CORS).
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter extends OncePerRequestFilter {
@@ -26,7 +24,6 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
         response.setHeader("Access-Control-Max-Age", "3600");
 
-        // Antes de um POST/PUT/DELETE o navegador manda um OPTIONS ("preflight"): responde 200 e para aqui
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;

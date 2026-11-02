@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Comentario {
     private String id;
-    private Postagem postagem; // no banco: POSTAGEM_ID
-    private Usuario usuario;   // autor do comentário (no banco: ID_USUARIO)
+    private Postagem postagem;
+    private Usuario usuario;
     private String conteudo;
     private int curtidas;
     private LocalDateTime dataComentario;

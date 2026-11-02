@@ -5,7 +5,6 @@ import br.com.fiap.MoovUp.dto.LinhaResponse;
 import br.com.fiap.MoovUp.enums.Estacao;
 import br.com.fiap.MoovUp.enums.Linha;
 
-// name() devolve o nome da constante do enum (ex.: "AZUL"), que é o código usado pelo front
 public class LinhaMapper {
 
     public static LinhaResponse toDTO(Linha linha) {

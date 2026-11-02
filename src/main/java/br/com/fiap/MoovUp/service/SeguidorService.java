@@ -23,7 +23,6 @@ public class SeguidorService {
         this.usuarioService = usuarioService;
     }
 
-    // Ordem: 400 (nem id nem nome, ou os dois) -> 404 (usuário/seguido) -> 422 (ele mesmo / já segue)
     public SeguidoResponse seguir(String idUsuario, SeguirRequest request) {
         boolean temId = request.idSeguido() != null && !request.idSeguido().trim().isEmpty();
         boolean temNome = request.nomeSeguido() != null && !request.nomeSeguido().trim().isEmpty();

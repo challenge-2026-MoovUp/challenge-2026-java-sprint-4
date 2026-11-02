@@ -13,7 +13,6 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    // O Spring entrega o service pronto (injeção pelo construtor)
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
@@ -45,7 +44,6 @@ public class UsuarioController {
         }
     }
 
-    // Caminho fixo: o Spring escolhe ele antes do /{id}, então "ranking" não é lido como ID
     @GetMapping("/ranking")
     public ResponseEntity<?> ranking() {
         try {

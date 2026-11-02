@@ -21,7 +21,6 @@ public class TicketDigitalDAO {
             "T.QR_CODE_HASH, T.ID_USUARIO, T.FORMA_RECEBIMENTO " +
             "FROM TICKET_DIGITAL T";
 
-    // Ticket novo vai para o estoque: sem dono e sem forma de recebimento
     public void cadastrarTicket(TicketDigital ticket) {
         String sql = "INSERT INTO TICKET_DIGITAL (ID_TICKET, MODALIDADE, STATUS, TARIFA_REAIS, CUSTO_EM_PONTOS, DATA_EXPIRACAO) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -61,7 +60,6 @@ public class TicketDigitalDAO {
         return null;
     }
 
-    // Filtros opcionais: quando status ou modalidade vêm null, não entram no WHERE
     public List<TicketDigital> listar(StatusTicket status, Modalidade modalidade) {
         String sql = SELECT_BASE + " WHERE 1 = 1";
         if (status != null) {
@@ -118,7 +116,6 @@ public class TicketDigitalDAO {
         return tickets;
     }
 
-    // Primeiro ticket DISPONIVEL da modalidade (FETCH FIRST = só uma linha)
     public TicketDigital buscarDisponivel(Modalidade modalidade) {
         String sql = SELECT_BASE + " WHERE T.STATUS = 'DISPONIVEL' AND T.MODALIDADE = ? FETCH FIRST 1 ROWS ONLY";
 
@@ -148,7 +145,7 @@ public class TicketDigitalDAO {
             ps.setString(1, status.name());
 
             try (ResultSet rs = ps.executeQuery()) {
-                rs.next(); // COUNT sempre devolve uma linha
+                rs.next();
                 return rs.getInt("TOTAL");
             }
         } catch (SQLException e) {
@@ -156,8 +153,6 @@ public class TicketDigitalDAO {
         }
     }
 
-    // Grava o resgate. O "AND STATUS = 'DISPONIVEL'" impede que dois usuários levem o mesmo ticket:
-    // se outro resgate chegou antes, nenhuma linha é alterada e o método devolve false.
     public boolean reservarTicket(TicketDigital ticket) {
         String sql = "UPDATE TICKET_DIGITAL SET ID_USUARIO = ?, STATUS = ?, FORMA_RECEBIMENTO = ?, QR_CODE_HASH = ?, DATA_EXPIRACAO = ? " +
                 "WHERE ID_TICKET = ? AND STATUS = 'DISPONIVEL'";
@@ -214,7 +209,6 @@ public class TicketDigitalDAO {
         ticket.setDataExpiracao(rs.getObject("DATA_EXPIRACAO", LocalDate.class));
         ticket.setQrCodeHash(rs.getString("QR_CODE_HASH"));
 
-        // Ticket no estoque não tem dono: aí o usuario fica null
         String idUsuario = rs.getString("ID_USUARIO");
         if (idUsuario != null) {
             Usuario dono = new Usuario();
