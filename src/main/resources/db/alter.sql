@@ -282,6 +282,24 @@ ALTER TABLE IMPACTO_AMBIENTAL_MOOVPASS
 
 
 -- ---------------------------------------------------------------------
+-- 02/11 - 8) Ônibus sai: o app só trabalha com METRO e TREM.
+-- Rodar DEPOIS do inserts.sql (ele apaga os tickets/impactos de ônibus;
+-- com eles no banco, o novo CHECK falharia).
+-- ---------------------------------------------------------------------
+ALTER TABLE TICKET_DIGITAL
+  DROP CONSTRAINT CK_TICKET_MODALIDADE;
+ALTER TABLE TICKET_DIGITAL
+  ADD CONSTRAINT CK_TICKET_MODALIDADE
+  CHECK (MODALIDADE IN ('METRO', 'TREM'));
+
+ALTER TABLE IMPACTO_AMBIENTAL_MOOVPASS
+  DROP CONSTRAINT CK_IMPACTO_MODALIDADE;
+ALTER TABLE IMPACTO_AMBIENTAL_MOOVPASS
+  ADD CONSTRAINT CK_IMPACTO_MODALIDADE
+  CHECK (MODALIDADE IN ('METRO', 'TREM'));
+
+
+-- ---------------------------------------------------------------------
 -- Conferência: deve listar as colunas/constraints novas
 -- ---------------------------------------------------------------------
 -- SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, DATA_LENGTH, NULLABLE FROM USER_TAB_COLUMNS

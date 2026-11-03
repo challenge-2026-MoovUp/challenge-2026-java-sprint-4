@@ -1,7 +1,6 @@
 package br.com.fiap.MoovUp.enums;
 
 public enum Modalidade {
-    ONIBUS(4.40, 15.0, 170.0),
     METRO(5.00, 10.0, 200.0),
     TREM(5.00, 20.0, 200.0);
 

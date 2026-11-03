@@ -48,7 +48,7 @@ public class TicketService {
 
         Modalidade filtroModalidade = null;
         if (modalidade != null) {
-            filtroModalidade = converterModalidadeFiltro(modalidade);
+            filtroModalidade = converterModalidade(modalidade);
         }
 
         List<TicketResponse> resposta = new ArrayList<>();
@@ -109,14 +109,6 @@ public class TicketService {
     }
 
     public Modalidade converterModalidade(String modalidade) {
-        Modalidade convertida = converterModalidadeFiltro(modalidade);
-        if (convertida == Modalidade.ONIBUS) {
-            throw new IllegalArgumentException("Ônibus não está disponível: use METRO ou TREM");
-        }
-        return convertida;
-    }
-
-    private Modalidade converterModalidadeFiltro(String modalidade) {
         if (modalidade == null) {
             throw new IllegalArgumentException("A modalidade é obrigatória (METRO ou TREM)");
         }
